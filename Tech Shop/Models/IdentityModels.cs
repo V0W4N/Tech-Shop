@@ -29,5 +29,7 @@ namespace Tech_Shop.Models
         {
             return new ApplicationDbContext();
         }
+
+        public System.Data.Entity.DbSet<Tech_Shop.Models.Product> Products { get; set; }
     }
 }
