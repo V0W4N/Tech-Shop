@@ -26,5 +26,9 @@ namespace Tech_Shop.Controllers
 
             return View();
         }
+        public ActionResult Products()
+        {
+            return View();
+        }
     }
 }

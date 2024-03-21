@@ -9,6 +9,8 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Tech_Shop.Models;
+using TechShop.BusinessLogic;
+using TechShop.BusinessLogic.Interfaces;
 
 namespace Tech_Shop.Controllers
 {
@@ -17,9 +19,11 @@ namespace Tech_Shop.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
-
+        private readonly ISession _session;
         public AccountController()
         {
+            var bl = new BusinessLogic();
+            _session = bl.GetSessionBL();
         }
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
