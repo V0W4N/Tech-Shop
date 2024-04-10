@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechShop.Domain", "TechShop
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechShop.Helpers", "TechShop.Helpers\TechShop.Helpers.csproj", "{CA2B5D06-FDE8-4FB7-AB8A-D04009C8D90B}"
 EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Database1", "Database1\Database1.sqlproj", "{190611DD-4CFF-49E7-8B2A-D8EAD21B277F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,12 @@ Global
 		{CA2B5D06-FDE8-4FB7-AB8A-D04009C8D90B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA2B5D06-FDE8-4FB7-AB8A-D04009C8D90B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA2B5D06-FDE8-4FB7-AB8A-D04009C8D90B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{190611DD-4CFF-49E7-8B2A-D8EAD21B277F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{190611DD-4CFF-49E7-8B2A-D8EAD21B277F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{190611DD-4CFF-49E7-8B2A-D8EAD21B277F}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{190611DD-4CFF-49E7-8B2A-D8EAD21B277F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{190611DD-4CFF-49E7-8B2A-D8EAD21B277F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{190611DD-4CFF-49E7-8B2A-D8EAD21B277F}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
