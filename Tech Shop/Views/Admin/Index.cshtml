@@ -1,0 +1,26 @@
+﻿@model Tech_Shop.Models.IndexViewModel
+@{
+    ViewBag.Title = "Admin";
+}
+
+<main aria-labelledby="title">
+    <h2 id="title">@ViewBag.Title.</h2>
+
+    <p class="text-success">@ViewBag.StatusMessage</p>
+    <div>
+        <h4>Admin Panel</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>check role</dt>
+            <dd>
+                    @Html.ActionLink("check admin role", "SeeRole")
+            </dd>
+            <dt>External Logins:</dt>
+            <dd>
+                @Model.Logins.Count [
+                @Html.ActionLink("Manage", "ManageLogins") ]
+            </dd>
+           
+        </dl>
+    </div>
+</main>

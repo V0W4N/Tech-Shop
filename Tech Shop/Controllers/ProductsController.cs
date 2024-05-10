@@ -45,6 +45,7 @@ namespace Tech_Shop.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,Name,Description,Category,ProductId")] Product product)
         {
@@ -58,7 +59,15 @@ namespace Tech_Shop.Controllers
             return View(product);
         }
 
+        public ActionResult test()
+        {
+            TestObject testObject = new TestObject();
+            testObject.Id = 1;
+            testObject.Description = "test";
+            return View(testObject);
+        }
         // GET: Products/Edit/5
+        [Authorize]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -77,6 +86,7 @@ namespace Tech_Shop.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,Name,Description,Category,ProductId")] Product product)
         {
@@ -90,6 +100,7 @@ namespace Tech_Shop.Controllers
         }
 
         // GET: Products/Delete/5
+        [Authorize]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -107,6 +118,7 @@ namespace Tech_Shop.Controllers
         // POST: Products/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult DeleteConfirmed(int id)
         {
             Product product = db.Products.Find(id);
