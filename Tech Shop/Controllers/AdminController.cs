@@ -90,6 +90,10 @@ namespace Tech_Shop.Controllers
             return View(model);
         }
 
+        public ActionResult ManageUser(ApplicationUser model)
+        {
+            return View(model);
+        }
 
         // POST: /Manage/RemoveLogin
         [HttpPost]
