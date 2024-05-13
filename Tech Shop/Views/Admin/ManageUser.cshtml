@@ -1,0 +1,15 @@
+﻿
+@{
+    ViewBag.Title = "ManageUser";
+}
+
+<h2>ManageUser</h2>
+@using (Html.BeginForm("ManageUser", "Admin", FormMethod.Post, new { role = "form" }))
+{
+    <select id="dropdown">
+        @foreach (var option in Model.Options)
+        {
+            <option value="@option">@option</option>
+        }
+    </select>
+}

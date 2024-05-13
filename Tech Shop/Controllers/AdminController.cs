@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -6,19 +7,39 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+using Tech_Shop.App_Start;
 using Tech_Shop.Models;
 
 namespace Tech_Shop.Controllers
 {
-    [Authorize]
+    public class AdminAuthorizeAttribute : AuthorizeAttribute, IAuthorizationFilter
+    {
+        protected override void HandleUnauthorizedRequest(AuthorizationContext filterContext)
+        {
+            if (!filterContext.HttpContext.User.Identity.IsAuthenticated)
+            {
+                // User is not authenticated, redirect to login page or show custom error message
+                filterContext.Result = new HttpUnauthorizedResult("You are not authenticated.");
+            }
+            else
+            {
+                // User is authenticated but doesn't have the required role, show custom error message
+                filterContext.Result = new HttpStatusCodeResult(403, "You are not authorized to access this resource.");
+            }
+        }
+    }
+    
+    [AdminAuthorize(Roles = "Moderator,Admin,PowerUser")]
     public class AdminController : Controller
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private ApplicationDbContext db = new ApplicationDbContext();
 
         public AdminController()
         {
         }
+
 
         public AdminController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
@@ -49,40 +70,27 @@ namespace Tech_Shop.Controllers
                 _userManager = value;
             }
         }
-
-        public ActionResult SeeRole()
+        /*
+        public ActionResult SetRole()
         {
+            var userId = User.Identity.GetUserId();
             TestObject testObject = new TestObject();
-            testObject.Name = User.Identity.GetUserId();
+            testObject.Name = db.Users.ToList().First().Roles.First().RoleId;
             testObject.Description = User.IsInRole("Admin").ToString();
             return View(testObject);
         }
+        */
         //
         // GET: /Manage/Index
         public async Task<ActionResult> Index(ManageMessageId? message)
         {
-            ViewBag.StatusMessage =
-                message == ManageMessageId.ChangePasswordSuccess ? "Your password has been changed."
-                : message == ManageMessageId.SetPasswordSuccess ? "Your password has been set."
-                : message == ManageMessageId.SetTwoFactorSuccess ? "Your two-factor authentication provider has been set."
-                : message == ManageMessageId.Error ? "An error has occurred."
-                : message == ManageMessageId.AddPhoneSuccess ? "Your phone number was added."
-                : message == ManageMessageId.RemovePhoneSuccess ? "Your phone number was removed."
-                : "";
-
             var userId = User.Identity.GetUserId();
-            var model = new IndexViewModel
-            {
-                HasPassword = HasPassword(),
-                PhoneNumber = await UserManager.GetPhoneNumberAsync(userId),
-                TwoFactor = await UserManager.GetTwoFactorEnabledAsync(userId),
-                Logins = await UserManager.GetLoginsAsync(userId),
-                BrowserRemembered = await AuthenticationManager.TwoFactorBrowserRememberedAsync(userId)
-            };
+            var model = new AdminViewModel();
+            model.UserList = db.Users.ToList();
             return View(model);
         }
 
-        //
+
         // POST: /Manage/RemoveLogin
         [HttpPost]
         [ValidateAntiForgeryToken]

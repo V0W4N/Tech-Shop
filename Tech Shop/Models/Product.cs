@@ -14,6 +14,11 @@ namespace Tech_Shop.Models
         public int ProductId { get; set; }
         public Product() { }
     }
+    public class ProductList
+    {
+        public IEnumerable<Product> Products { get; set; }
+        public Boolean IsAdmin { get; set; }
+    }
     public class TestObject
     {
         public int Id { get; set; }

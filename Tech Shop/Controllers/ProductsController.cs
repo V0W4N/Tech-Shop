@@ -4,8 +4,10 @@ using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
+using System.Security.Principal;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 using Tech_Shop.Models;
 
 namespace Tech_Shop.Controllers
@@ -13,11 +15,15 @@ namespace Tech_Shop.Controllers
     public class ProductsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
-
+        private List<string> roleList = new List<string>{"Moderator", "Admin", "PowerUser"};
         // GET: Products
         public ActionResult Index()
         {
-            return View(db.Products.ToList());
+            ProductList list = new ProductList();
+            list.Products = db.Products.ToList();
+            
+            list.IsAdmin = this.IsInRoleList(roleList, User);
+            return View(list);
         }
 
         // GET: Products/Details/5
@@ -134,6 +140,17 @@ namespace Tech_Shop.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+        protected Boolean IsInRoleList(List<string> roles, IPrincipal user)
+        {
+            foreach (string role in roleList)
+            {
+                if (user.IsInRole(role))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
