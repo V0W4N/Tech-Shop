@@ -10,12 +10,6 @@
     <div>
         <h4>Admin Panel</h4>
         <hr />
-        <dl class="dl-horizontal">
-            <dt>check role</dt>
-            <dd>
-                @Html.ActionLink("check admin role", "SeeRole")
-            </dd>
-        </dl>
     </div>
     <table class="table">
         <tr>
@@ -38,11 +32,7 @@
         </tr>
         @foreach (var user in Model.UserList)
         {
-            var role = RoleOrder.GetRole(0);
-            if (user.Roles.Count > 0)
-            {
-                role = RoleOrder.GetRole(user.Roles.First().RoleId.AsInt());
-            }
+            var role = RoleManager.GetUserRoleStr(user.Roles);
 
                 <tr>
                     <td>
@@ -61,7 +51,7 @@
                         @Html.DisplayFor(model => user.PhoneNumber)
                     </td>
                     <td>
-                        @Html.ActionLink("Manage User", "ManageUser")
+                        @Html.ActionLink("Manage User", "ManageUser", new { UId = user.Id })
                     </td>
                 </tr>
             }

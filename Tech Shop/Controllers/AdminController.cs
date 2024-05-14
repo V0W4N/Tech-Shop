@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
+using System.Security.Principal;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -82,7 +84,7 @@ namespace Tech_Shop.Controllers
         */
         //
         // GET: /Manage/Index
-        public async Task<ActionResult> Index(ManageMessageId? message)
+        public ActionResult Index()
         {
             var userId = User.Identity.GetUserId();
             var model = new AdminViewModel();
@@ -90,10 +92,29 @@ namespace Tech_Shop.Controllers
             return View(model);
         }
 
-        public ActionResult ManageUser(ApplicationUser model)
+        public ActionResult ManageUser(string UId)
         {
+            ManageUserModel model = new ManageUserModel();
+            model.User = db.Users.FirstOrDefault(u => u.Id == UId);
+            model.Manager = User;
             return View(model);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ChangeRole(ApplicationUser ManagedUser, string role)
+        {
+            if (RoleManager.RoleExists(role)){
+                await UserManager.RemoveFromRolesAsync(ManagedUser.Id, RoleManager.GetUserRoleStr(ManagedUser));
+                await UserManager.AddToRoleAsync(ManagedUser.Id, role);
+            }
+            else
+            {
+                throw new Exception("");
+            }
+            return RedirectToAction("Index", "Admin");
+        }
+
 
         // POST: /Manage/RemoveLogin
         [HttpPost]

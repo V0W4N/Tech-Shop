@@ -1,15 +1,16 @@
-﻿
+﻿@model Tech_Shop.Models.ManageUserModel
 @{
     ViewBag.Title = "ManageUser";
 }
-
+@using Tech_Shop.App_Start
 <h2>ManageUser</h2>
-@using (Html.BeginForm("ManageUser", "Admin", FormMethod.Post, new { role = "form" }))
+@using (Html.BeginForm("ChangeRole", "Admin", FormMethod.Post))
 {
-    <select id="dropdown">
-        @foreach (var option in Model.Options)
-        {
-            <option value="@option">@option</option>
-        }
-    </select>
+    @Html.AntiForgeryToken()
+    <h3>Username: @Html.DisplayFor(model => Model.User.UserName)</h3>
+    <h4>current role: @RoleManager.GetUserRoleStr(Model.User.Roles)</h4>
+    @Html.DropDownList("role", RoleManager.GetRoleListForUser(Model.Manager))
+    <input type="hidden" name="ManagedUser.UserName" value="@Model.User.UserName">
+    <input type="hidden" name="ManagedUser.Id" value="@Model.User.Id">
+    <input type="submit" value="Apply" class="btn btn-outline-dark" />
 }

@@ -7,7 +7,7 @@
     @Html.AntiForgeryToken()
 
 <ul class="navbar-nav navbar-right">
-    @if (RoleOrder.CheckForRoles(User, "Admin"))
+    @if (RoleManager.CheckForRoles(User, "Admin"))
     {
         <li>
             @Html.ActionLink("Control Panel", "Index", "Admin", routeValues: null, htmlAttributes: new { title = "Manage", @class = "nav-link" })
