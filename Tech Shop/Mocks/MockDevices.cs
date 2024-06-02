@@ -5,11 +5,13 @@ using System.Web;
 using Tech_Shop.Interfaces;
 using Tech_Shop.Models;
 
+
 namespace Tech_Shop.Mocks
 {
     public class MockDevices : IAllDevices {
+       
         private readonly IDeviceCategory _categoryDevice = new MockCategory();
-        public IEnumerable<Device> devices {
+        public IEnumerable<Device> Devices {
             get {
                 return new List<Device> {
                     new Device
@@ -18,7 +20,7 @@ namespace Tech_Shop.Mocks
                         shortDescription = "Viser",
                         description = "Ne lagaet v tetris",
                         Price = 15000,
-                        category = _categoryDevice.AllCategories.First()
+                        //category = _categoryDevice.AllCategories.First()
                     },
                     new Device
                     {
@@ -26,7 +28,7 @@ namespace Tech_Shop.Mocks
                         shortDescription = "Krutit",
                         description = "Delaet vjuh",
                         Price = 3000,
-                        category = _categoryDevice.AllCategories.Last()
+                   //     category = _categoryDevice.AllCategories.Last()
                     }
                 };
             }

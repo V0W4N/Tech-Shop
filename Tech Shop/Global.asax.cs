@@ -1,5 +1,7 @@
+
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Http;
@@ -8,6 +10,9 @@ using System.Web.Optimization;
 using System.Web.Routing;
 using System.Web.Security;
 using System.Web.SessionState;
+using Tech_Shop.Interfaces;
+using Tech_Shop.Mocks;
+using Tech_Shop.Models;
 
 namespace Tech_Shop
 {
@@ -20,6 +25,8 @@ namespace Tech_Shop
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            Database.SetInitializer(new DeviceDbInitializer());
         }
+       
     }
 }

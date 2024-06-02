@@ -7,7 +7,7 @@ using Tech_Shop.Models;
 
 namespace Tech_Shop.Interfaces
 {
-    internal interface IDeviceCategory
+    public interface IDeviceCategory
     {
         IEnumerable<DeviceCategory> AllCategories { get; }
     }

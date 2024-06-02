@@ -1,0 +1,48 @@
+﻿@*@using Tech_Shop.ViewModels
+@model DeviceListViewModel*@
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Каталог</title>
+</head>
+<body>
+    <div>
+        <h3>Распродажа ерундны</h3>
+        <table>
+            <tr>
+                <td><p>Название устройства</p></td>
+                <td><p>Цена</p></td>
+                <td></td>
+            </tr>
+            @foreach (var b in ViewBag.Devices)
+            {
+                <tr>
+                    <td><p>@b.Name</p></td>
+                    <td><p>@b.Price</p></td>
+                    <td><p><a href="/Home/Buy/@b.Id">Купить</a></p></td>
+                </tr>
+            }
+        </table>
+    </div>
+</body>
+</html>
+@*<main>
+    <h2>Вот они, мои красотулечки, слева направо:</h2>
+    <h3>@Model.currCategory</h3>
+    @{
+        foreach (var device in Model.allDevices)
+        {
+            <div>
+                <h2>Модель: @device.Name</h2>
+            </div>
+            <p>
+                Цена : @device.Price.ToString("c")
+            </p>
+        }
+    }
+</main>*@

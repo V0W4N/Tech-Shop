@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="BusinessLogic.cs" />
     <Compile Include="Core\AdminApi.cs" />
+    <Compile Include="Core\DBModel\Init.cs" />
     <Compile Include="Core\UserApi.cs" />
     <Compile Include="Interfaces\ISession.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -58,6 +59,8 @@
       <Name>TechShop.Helpers</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Core\DBModel\Seed\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -6,11 +6,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Tech_Shop.Models;
 
+
 namespace Tech_Shop.Interfaces
 {
-    internal interface IAllDevices
+    public interface IAllDevices
     {
-        IEnumerable<Device> devices { get;  }
+        IEnumerable<Device> Devices { get;  }
         Device getDeviceByID(int deviceId);
     }
 }
