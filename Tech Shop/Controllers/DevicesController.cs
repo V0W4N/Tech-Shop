@@ -16,23 +16,27 @@ namespace Tech_Shop.Controllers
     {
 
         DeviceContext db = new DeviceContext();
-       
-        //IAllDevices _allDevices = new MockDevices();
-        //IDeviceCategory _allCategories = new MockCategory();
-        //public DevicesController(MockDevices iAllDevices, MockCategory iDeviceCat)
-        //{
-        //    _allDevices = iAllDevices;
-        //    _allCategories = iDeviceCat;
-        //}
         public DevicesController() { }
         public ViewResult List()
         {
-            //DeviceListViewModel obj = new DeviceListViewModel();
-            //obj.allDevices = db.Devices;
-            //obj.currCategory = "Устройства";
             IEnumerable<Device> devices = db.Devices;
             ViewBag.Devices = devices;
             return View();
+        }
+        
+        [HttpGet]
+        public ActionResult Buy(int id)
+        {
+            ViewBag.DeviceId = id;
+            return View();
+        }
+        [HttpPost]
+        public string Buy(Purchase purchase)
+        {
+            purchase.Date = DateTime.Now;
+            db.Purchases.Add(purchase);
+            db.SaveChanges();
+            return "Спасибо," + purchase.Person + ", за покупку!";
         }
     }
 }
