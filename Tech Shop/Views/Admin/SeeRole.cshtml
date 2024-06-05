@@ -1,0 +1,14 @@
+﻿@model Tech_Shop.Models.TestObject
+
+@{
+    ViewBag.Title = "See Role";
+}
+
+<h2>Index</h2>
+<p>Test page!</p>
+@using (Html.BeginForm())
+{
+    <p>@Html.ValueFor(model => model.Name)</p>
+    <p>@Html.ValueFor(model => model.Description)</p>
+    <p>uhh</p>
+}

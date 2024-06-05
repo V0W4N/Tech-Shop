@@ -1,0 +1,59 @@
+﻿@model Tech_Shop.Models.AdminViewModel
+@{
+    ViewBag.Title = "Control Panel";
+}
+@using Tech_Shop.App_Start
+<main aria-labelledby="title">
+    <h2 id="title">@ViewBag.Title.</h2>
+
+    <p class="text-success">@ViewBag.StatusMessage</p>
+    <div>
+        <h4>Admin Panel</h4>
+        <hr />
+    </div>
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.UserList.First().Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserList.First().UserName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserList.First().Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserList.First().Roles)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserList.First().PhoneNumber)
+            </th>
+            <th></th>
+        </tr>
+        @foreach (var user in Model.UserList)
+        {
+            var role = RoleManager.GetUserRoleStr(user.Roles);
+
+                <tr>
+                    <td>
+                        @Html.DisplayFor(model => user.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => user.UserName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => user.Email)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => role)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => user.PhoneNumber)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Manage User", "ManageUser", new { UId = user.Id })
+                    </td>
+                </tr>
+            }
+        </table>
+</main>
