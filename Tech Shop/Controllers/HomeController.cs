@@ -10,6 +10,9 @@ namespace Tech_Shop.Controllers
     {
         public ActionResult Index()
         {
+            var cookie = Request.Cookies["CustomCookie"];
+            string cookieValue = cookie != null ? cookie.Value : "Cookie not found";
+            ViewBag.CookieValue = cookieValue;
             return View();
         }
 
