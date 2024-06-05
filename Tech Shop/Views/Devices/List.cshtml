@@ -1,48 +1,49 @@
-﻿@*@using Tech_Shop.ViewModels
-@model DeviceListViewModel*@
-@{
-    Layout = null;
-}
-<!DOCTYPE html>
+﻿@using Tech_Shop.Models
+@model DeviceListViewModel
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Каталог</title>
-</head>
-<body>
-    <div>
-        <h3>Распродажа ерундны</h3>
-        <table>
-            <tr>
-                <td><p>Название устройства</p></td>
-                <td><p>Цена</p></td>
-                <td></td>
-            </tr>
-            @foreach (var b in ViewBag.Devices)
-            {
-                <tr>
-                    <td><p>@b.Name</p></td>
-                    <td><p>@b.Price</p></td>
-                    <td><p><a href="/Devices/Buy/@b.Id">Купить</a></p></td>
-                </tr>
-            }
-        </table>
-    </div>
-</body>
-</html>
-@*<main>
-    <h2>Вот они, мои красотулечки, слева направо:</h2>
-    <h3>@Model.currCategory</h3>
-    @{
-        foreach (var device in Model.allDevices)
+
+
+    <h3>Распродажа Имбы</h3>
+    <p>@Html.ActionLink("Кнопка которая добавляет", "Create")</p>
+
+    <form method="get">
+        <div class="form-inline">
+            <label class="control-label">Название: </label>
+            @Html.DropDownList("name", Model.Names as SelectList,
+                        htmlAttributes: new { @class = "form-control" })
+
+            <input type="submit" value="Фильтр" class="btn btn-default" />
+        </div>
+    </form>
+    <table>
+        <tr>
+            <th>Название</th>
+            <th>Цена</th>
+            <th>короткое описание</th>
+            <th>Длинное описание</th>
+            <th></th>
+        </tr>
+        @foreach (var item in Model.Devices)
         {
-            <div>
-                <h2>Модель: @device.Name</h2>
-            </div>
-            <p>
-                Цена : @device.Price.ToString("c")
-            </p>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.shortDescription)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.description)
+                </td>
+                <td>
+                    @Html.ActionLink("Редактировать", "Edit", new { id = item.Id }) |
+                    @Html.ActionLink("Удалить", "Delete", new { id = item.Id })
+                </td>
+            </tr>
         }
-    }
-</main>*@
+    </table>                                                  
+
+

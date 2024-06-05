@@ -12,22 +12,16 @@
 <body>
     <div>
         <h3>Форма оформления покупки</h3>
-        <form method="post" action="">
+        @using (Html.BeginForm("Buy", "Home", FormMethod.Post))
+        {
             <input type="hidden" value="@ViewBag.DeviceId" name="DeviceId" />
-            <table>
-                <tr>
-                    <td><p>Введите свое имя </p></td>
-                    <td><input type="text" name="Person" /> </td>
-                </tr>
-                <tr>
-                    <td><p>Введите адрес :</p></td>
-                    <td>
-                        <input type="text" name="Address" />
-                    </td>
-                </tr>
-                <tr><td><input type="submit" value="Отправить" /> </td><td></td></tr>
-            </table>
-        </form>
+
+            <p>Введите свое имя </p>
+            @Html.TextBox("Person", "Введите имя");
+            <p>Введите адрес :</p>
+            @Html.TextBox("Address", "Введите Адрес");
+            <input type="submit" value="Отправить" />
+        }
     </div>
 </body>
 </html>

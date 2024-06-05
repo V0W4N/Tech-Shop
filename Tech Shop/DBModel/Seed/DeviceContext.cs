@@ -15,5 +15,6 @@ namespace Tech_Shop.DBModel.Seed
         }
         public virtual DbSet<Device> Devices { get; set; }
         public virtual DbSet<Purchase> Purchases { get; set; }
+
     }
 }

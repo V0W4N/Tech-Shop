@@ -31,7 +31,14 @@ namespace Tech_Shop.Models
                 Price = 3000,
            //     category = _categoryDevice.AllCategories.Last()
             });
-          
+            db.Devices.Add(new Device
+            {
+                Name = "Sony",
+                shortDescription = "Visit",
+                description = "Dolgo visit",
+                Price = 2700,
+                //     category = _categoryDevice.AllCategories.Last()
+            });
 
             base.Seed(db);
         }
