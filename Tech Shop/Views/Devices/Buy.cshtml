@@ -1,0 +1,27 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Покупка</title>
+</head>
+<body>
+    <div>
+        <h3>Форма оформления покупки</h3>
+        @using (Html.BeginForm("Buy", "Home", FormMethod.Post))
+        {
+            <input type="hidden" value="@ViewBag.DeviceId" name="DeviceId" />
+
+            <p>Введите свое имя </p>
+            @Html.TextBox("Person", "Введите имя");
+            <p>Введите адрес :</p>
+            @Html.TextBox("Address", "Введите Адрес");
+            <input type="submit" value="Отправить" />
+        }
+    </div>
+</body>
+</html>
