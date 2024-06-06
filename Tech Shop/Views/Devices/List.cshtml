@@ -19,7 +19,7 @@
         <tr>
             <th>Название</th>
             <th>Цена</th>
-            <th>короткое описание</th>
+            <th>Короткое описание</th>
             <th>Длинное описание</th>
             <th></th>
         </tr>
@@ -39,7 +39,7 @@
                     @Html.DisplayFor(modelItem => item.description)
                 </td>
                 <td>
-                    @Html.ActionLink("Редактировать", "Edit", new { id = item.Id }) |
+                    @Html.ActionLink("Редактировать", "EditDevice", new { id = item.Id }) |
                     @Html.ActionLink("Удалить", "Delete", new { id = item.Id })
                 </td>
             </tr>

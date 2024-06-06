@@ -1,0 +1,36 @@
+﻿
+@{
+    ViewBag.Title = "Create";
+}
+@model Tech_Shop.Models.Device
+
+<h2>Create</h2>
+<h2>New Device</h2>
+@using (Html.BeginForm(FormMethod.Post))
+{
+    <fieldset>
+        <p>
+            @Html.LabelFor(m => m.Name, "Device Name")
+            <br />
+            @Html.EditorFor(m => m.Name)
+        </p>
+        <p>
+            @Html.LabelFor(m => m.Price, "Device Price")
+            <br />
+            @Html.EditorFor(m => m.Price)
+        </p>
+        <p>
+            @Html.LabelFor(m => m.shortDescription, "Short Description")
+            <br />
+            @Html.EditorFor(m => m.shortDescription)
+        </p>
+        <p>
+            @Html.LabelFor(m => m.description, "Description")
+            <br />
+            @Html.EditorFor(m => m.description)
+        </p>
+        <p><input type="submit" value="Submit" />
+    </fieldset>
+}
+
+

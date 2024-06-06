@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Numerics;
 using System.Web;
@@ -17,13 +18,52 @@ namespace Tech_Shop.Controllers
 
         DeviceContext db = new DeviceContext();
         public DevicesController() { }
-        //public ViewResult List()
-        //{
-        //    IEnumerable<Device> devices = db.Devices;
-        //    ViewBag.Devices = devices;
-        //    return View();
-        //}
-        
+
+        [HttpGet]
+        public ActionResult EditDevice(int? id)
+        {
+            if (id == null)             
+                return HttpNotFound();
+            Device device = db.Devices.Find(id);
+            if (device != null) 
+                return View(device);
+            return HttpNotFound();
+        }
+        [HttpPost]
+        public ActionResult EditDevice(Device device)
+        {
+            db.Entry(device).State = EntityState.Modified;
+            db.SaveChanges();
+            return RedirectToAction("List");
+        }
+        [HttpGet]
+        public ActionResult Create()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult Create(Device device)
+        {
+            db.Devices.Add(device);
+            db.SaveChanges();
+            return RedirectToAction("List");
+        }
+        [HttpGet]
+        public ActionResult Delete(int? id)
+        {
+            Device device = db.Devices.Find(id);    
+            if(id == null) return HttpNotFound();
+            return View(device);
+        }
+        [HttpPost , ActionName("Delete")]
+        public ActionResult DeleteConfirmed(int? id)
+        {
+            Device device = db.Devices.Find(id);
+            if (id == null) return HttpNotFound();
+            db.Devices.Remove(device);
+            db.SaveChanges();
+            return RedirectToAction("List");
+        }
         [HttpGet]
         public ActionResult Buy(int id)
         {

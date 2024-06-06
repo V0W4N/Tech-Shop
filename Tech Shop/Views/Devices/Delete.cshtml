@@ -1,0 +1,32 @@
+﻿
+@{
+    ViewBag.Title = "Delete";
+}
+
+@model Tech_Shop.Models.Device
+<h2>Device deletion</h2>
+<dl>
+    <dt>Name</dt>
+    <dd>
+        @Html.DisplayFor(model => model.Name)
+    </dd>
+
+    <dt>Price</dt>
+    <dd>
+        @Html.DisplayFor(model => model.Price)
+    </dd>
+
+    <dt>Short Description</dt>
+    <dd>
+        @Html.DisplayFor(model => model.shortDescription)
+    </dd>
+    <dt>Description</dt>
+    <dd>
+        @Html.DisplayFor(model => model.description)
+    </dd>
+</dl>
+
+@using (Html.BeginForm())
+{
+    <input type="submit" value="Delete" />
+}

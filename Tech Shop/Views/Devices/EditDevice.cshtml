@@ -1,0 +1,33 @@
+﻿@{
+    ViewBag.Title = "Editor";
+ }
+@model Tech_Shop.Models.Device
+
+<h2>Устройство @Model.Id</h2>
+@using (Html.BeginForm("EditDevice", "Devices", FormMethod.Post))
+            {
+                <fieldset>
+                    @Html.HiddenFor(m => m.Id)
+                    <p>
+                        @Html.LabelFor(m => m.Name, "Device Name")
+                        <br />
+                        @Html.EditorFor(m => m.Name)
+                    </p>
+                    <p>
+                        @Html.LabelFor(m => m.Price, "Device Price")
+                        <br />
+                        @Html.EditorFor(m => m.Price)
+                    </p>
+                    <p>
+                        @Html.LabelFor(m => m.shortDescription, "Short Description")
+                        <br />
+                        @Html.EditorFor(m => m.shortDescription)
+                    </p>
+                    <p>
+                        @Html.LabelFor(m => m.description, "Description")
+                        <br />
+                        @Html.EditorFor(m => m.description)
+                    </p>
+                    <p><input type="submit" value="Submit" />
+                </fieldset>
+            }

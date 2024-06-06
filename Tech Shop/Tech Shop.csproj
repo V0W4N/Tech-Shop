@@ -314,6 +314,9 @@
     <Content Include="Views\Products\test.cshtml" />
     <Content Include="Views\Admin\SeeRole.cshtml" />
     <Content Include="Views\Admin\ManageUser.cshtml" />
+    <Content Include="Views\Devices\EditDevice.cshtml" />
+    <Content Include="Views\Devices\Create.cshtml" />
+    <Content Include="Views\Devices\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
