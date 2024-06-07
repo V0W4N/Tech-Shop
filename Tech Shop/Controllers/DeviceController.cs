@@ -2,22 +2,18 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Numerics;
-using System.Web;
 using System.Web.Mvc;
 using Tech_Shop.DBModel.Seed;
-using Tech_Shop.Interfaces;
-using Tech_Shop.Mocks;
 using Tech_Shop.Models;
 
 namespace Tech_Shop.Controllers
 {
 
-    public class DevicesController : Controller
+    public class DeviceController : Controller
     {
 
         DeviceContext db = new DeviceContext();
-        public DevicesController() { }
+        public DeviceController() { }
 
         [HttpGet]
         public ActionResult EditDevice(int? id)
@@ -74,13 +70,18 @@ namespace Tech_Shop.Controllers
             ViewBag.DeviceId = id;
             return View();
         }
-        [HttpPost]
-        public string Buy(Purchase purchase)
+        // [HttpPost]
+        //public string Buy(Purchase purchase)
+        //{
+        //    purchase.Date = DateTime.Now;
+        //    db.Purchases.Add(purchase);
+        //    db.SaveChanges();
+        //    return "Спасибо," + purchase.Person + ", за покупку!";
+        //}
+        public ActionResult Index()
         {
-            purchase.Date = DateTime.Now;
-            db.Purchases.Add(purchase);
             db.SaveChanges();
-            return "Спасибо," + purchase.Person + ", за покупку!";
+            return View();
         }
         public ActionResult List(string name)
         {
@@ -88,9 +89,9 @@ namespace Tech_Shop.Controllers
           
             if (!String.IsNullOrEmpty(name) && !name.Equals("Все"))
             {
-                devices = devices.Where(p => p.Name == name);
+                devices = devices.Where(p => p.DeviceName == name);
             }
-            List<string> devicesName = db.Devices.Select(p=> p.Name).ToList();
+            List<string> devicesName = db.Devices.Select(p=> p.DeviceName).ToList();
             devicesName.Insert(0, "Все");
             DeviceListViewModel dlvm = new DeviceListViewModel
             {

@@ -27,20 +27,20 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Name)
+                    @Html.DisplayFor(modelItem => item.DeviceName)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Price)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.shortDescription)
+                    @Html.DisplayFor(modelItem => item.Manufacturer)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.description)
+                    @Html.DisplayFor(modelItem => item.Description)
                 </td>
                 <td>
-                    @Html.ActionLink("Редактировать", "EditDevice", new { id = item.Id }) |
-                    @Html.ActionLink("Удалить", "Delete", new { id = item.Id })
+                    @Html.ActionLink("Редактировать", "EditDevice", new { id = item.DeviceId }) |
+                    @Html.ActionLink("Удалить", "Delete", new { id = item.DeviceId })
                 </td>
             </tr>
         }

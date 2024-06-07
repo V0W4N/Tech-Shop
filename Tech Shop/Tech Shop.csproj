@@ -205,7 +205,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
-    <Compile Include="Controllers\DevicesController.cs" />
+    <Compile Include="Controllers\DeviceController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
@@ -217,9 +217,9 @@
     </Compile>
     <Compile Include="Interfaces\IAllDevices.cs" />
     <Compile Include="Interfaces\IDeviceCategory.cs" />
-    <Compile Include="Mocks\MockDevices.cs" />
-    <Compile Include="Mocks\MockCategory.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\DeviceCategoryAttribute.cs" />
+    <Compile Include="Models\DeviceCategoryAttributeValue.cs" />
     <Compile Include="Models\DeviceDbInitializer.cs" />
     <Compile Include="Models\Device.cs" />
     <Compile Include="Models\DeviceCategory.cs" />
@@ -308,15 +308,15 @@
     <Content Include="Views\Products\Details.cshtml" />
     <Content Include="Views\Products\Edit.cshtml" />
     <Content Include="Views\Products\Index.cshtml" />
-    <Content Include="Views\Devices\List.cshtml" />
-    <Content Include="Views\Devices\Buy.cshtml" />
+    <Content Include="Views\Device\List.cshtml" />
+    <Content Include="Views\Device\Buy.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\Products\test.cshtml" />
     <Content Include="Views\Admin\SeeRole.cshtml" />
     <Content Include="Views\Admin\ManageUser.cshtml" />
-    <Content Include="Views\Devices\EditDevice.cshtml" />
-    <Content Include="Views\Devices\Create.cshtml" />
-    <Content Include="Views\Devices\Delete.cshtml" />
+    <Content Include="Views\Device\EditDevice.cshtml" />
+    <Content Include="Views\Device\Create.cshtml" />
+    <Content Include="Views\Device\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
