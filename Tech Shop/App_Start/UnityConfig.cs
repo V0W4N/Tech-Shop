@@ -17,6 +17,10 @@ public static class UnityConfig
         var container = new UnityContainer();
 
 
+        container.RegisterType<DbContext>();
+        container.RegisterType<CartService>();
+        container.RegisterType<OrderService>();
+        container.RegisterType<ApplicationDbContext, ApplicationDbContext>();
         // Register all controllers
         var controllers = AppDomain.CurrentDomain.GetAssemblies()
     .SelectMany(a => a.GetTypes())
@@ -30,10 +34,6 @@ public static class UnityConfig
                 container.RegisterType(controllerType, new InjectionConstructor());
             }
         }
-        container.RegisterType<DbContext>();
-        container.RegisterType<CartService>();
-        container.RegisterType<OrderService>();
-        container.RegisterType<ApplicationDbContext, ApplicationDbContext>();
 
         DependencyResolver.SetResolver(new UnityDependencyResolver(container));
     }

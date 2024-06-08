@@ -71,31 +71,7 @@ namespace Tech_Shop.Controllers
             return RedirectToAction("Index");
         }
         // Other actions...
-        [HttpPost]
-        public ActionResult CompleteOrder()
-        {
-            if (User.Identity.IsAuthenticated)
-            {
-                var userId = User.Identity.GetUserId();
-                var cartItems = _cartService.GetCartItems().ToList();
-                var order = new Order
-                {
-                    UserId = userId,
-                    OrderDate = DateTime.Now,
-                    TotalAmount = cartItems.Sum(item => item.Product.Price * item.Quantity),
-                    OrderItems = cartItems.Select(item => new OrderItem
-                    {
-                        ProductId = item.ProductId,
-                        Quantity = item.Quantity
-                    }).ToList()
-                };
 
-                _orderService.AddOrder(order);
-                _cartService.EmptyCart();
-            }
-
-            return RedirectToAction("Index");
-        }
         // GET: Products/Details/5
         public ActionResult Details(int? id)
         {
