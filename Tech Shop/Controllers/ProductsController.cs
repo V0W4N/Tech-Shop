@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNet.Identity;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
@@ -9,23 +10,92 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using Tech_Shop.Models;
+using Tech_Shop.Services;
 
 namespace Tech_Shop.Controllers
 {
     public class ProductsController : Controller
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
-        private List<string> roleList = new List<string>{"Moderator", "Admin", "PowerUser"};
+        private ApplicationDbContext _db = new ApplicationDbContext();
+        private CartService _cartService = new CartService();
+        private OrderService _orderService = new OrderService();
+        private List<string> roleList = new List<string> { "Moderator", "Admin", "PowerUser" };
+
+
         // GET: Products
         public ActionResult Index()
         {
-            ProductList list = new ProductList();
-            list.Products = db.Products.ToList();
-            
-            list.IsAdmin = this.IsInRoleList(roleList, User);
+            var products = _db.Products.ToList();
+            var cartItems = _cartService.GetCartItems();
+
+            var list = new ProductListWithQ
+            {
+                Products = products,
+                CartItems = cartItems,
+                IsAdmin = IsInRoleList(roleList, User)
+            };
+
+            string addedProductName = TempData["AddedProductName"] as string;
+            TempData.Remove("AddedProductName");
+            if (addedProductName != "")
+            {
+                ViewBag.AddedProductName = addedProductName;
+            }
+
             return View(list);
         }
 
+
+        // POST: Products/AddToCart
+        [HttpPost]
+        public ActionResult AddToCart(int id)
+        {
+            Product product = _db.Products.Find(id);
+            if (product == null)
+            {
+                return HttpNotFound();
+            }
+            if (product != null)
+            {
+                _cartService.AddToCart(id, product);
+                TempData["AddedProductName"] = product.Name;
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public ActionResult RemoveFromCart(int id)
+        {
+            _cartService.RemoveFromCart(id);
+            return RedirectToAction("Index");
+        }
+        // Other actions...
+        [HttpPost]
+        public ActionResult CompleteOrder()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                var userId = User.Identity.GetUserId();
+                var cartItems = _cartService.GetCartItems().ToList();
+                var order = new Order
+                {
+                    UserId = userId,
+                    OrderDate = DateTime.Now,
+                    TotalAmount = cartItems.Sum(item => item.Product.Price * item.Quantity),
+                    OrderItems = cartItems.Select(item => new OrderItem
+                    {
+                        ProductId = item.ProductId,
+                        Quantity = item.Quantity
+                    }).ToList()
+                };
+
+                _orderService.AddOrder(order);
+                _cartService.EmptyCart();
+            }
+
+            return RedirectToAction("Index");
+        }
         // GET: Products/Details/5
         public ActionResult Details(int? id)
         {
@@ -33,7 +103,7 @@ namespace Tech_Shop.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Product product = db.Products.Find(id);
+            Product product = _db.Products.Find(id);
             if (product == null)
             {
                 return HttpNotFound();
@@ -57,21 +127,14 @@ namespace Tech_Shop.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Products.Add(product);
-                db.SaveChanges();
+                _db.Products.Add(product);
+                _db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
             return View(product);
         }
 
-        public ActionResult test()
-        {
-            TestObject testObject = new TestObject();
-            testObject.Id = 1;
-            testObject.Description = "test";
-            return View(testObject);
-        }
         // GET: Products/Edit/5
         [Authorize]
         public ActionResult Edit(int? id)
@@ -80,7 +143,7 @@ namespace Tech_Shop.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Product product = db.Products.Find(id);
+            Product product = _db.Products.Find(id);
             if (product == null)
             {
                 return HttpNotFound();
@@ -88,9 +151,38 @@ namespace Tech_Shop.Controllers
             return View(product);
         }
 
-        // POST: Products/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
+        public bool ConfirmPurchase()
+        {
+            var cartItems = _cartService.GetCartItems();
+
+            if (!cartItems.Any())
+            {
+                return false; // No items to purchase
+            }
+
+            try
+            {
+                var order = new Order
+                {
+                    OrderDate = DateTime.Now,
+                    OrderItems = cartItems.Select(ci => new OrderItem
+                    {
+                        ProductId = ci.ProductId,
+                        Quantity = ci.Quantity,
+                        TotalAmount = ci.Product.Price
+                    }).ToList()
+                };
+
+                _db.Orders.Add(order);
+                _db.SaveChanges();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
@@ -98,8 +190,8 @@ namespace Tech_Shop.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(product).State = EntityState.Modified;
-                db.SaveChanges();
+                _db.Entry(product).State = EntityState.Modified;
+                _db.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View(product);
@@ -113,7 +205,7 @@ namespace Tech_Shop.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Product product = db.Products.Find(id);
+            Product product = _db.Products.Find(id);
             if (product == null)
             {
                 return HttpNotFound();
@@ -127,9 +219,9 @@ namespace Tech_Shop.Controllers
         [Authorize]
         public ActionResult DeleteConfirmed(int id)
         {
-            Product product = db.Products.Find(id);
-            db.Products.Remove(product);
-            db.SaveChanges();
+            Product product = _db.Products.Find(id);
+            _db.Products.Remove(product);
+            _db.SaveChanges();
             return RedirectToAction("Index");
         }
 
@@ -137,11 +229,12 @@ namespace Tech_Shop.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                _db.Dispose();
             }
             base.Dispose(disposing);
         }
-        protected Boolean IsInRoleList(List<string> roles, IPrincipal user)
+
+        protected bool IsInRoleList(List<string> roles, IPrincipal user)
         {
             foreach (string role in roleList)
             {

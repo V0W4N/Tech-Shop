@@ -16,14 +16,23 @@
     <li>
         @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage", @class = "nav-link" })
     </li>
+    <li>
+        <a href="@Url.Action("Index", "Cart")" class="btn btn-light">
+            <i class="fa-solid fa-cart-shopping"></i> Cart
+        </a>
+    </li>
     <li><a class="nav-link" href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
 </ul>
     }
 }
 else
 {
-    <ul class="navbar-nav navbar-right">
-        <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink", @class="nav-link" })</li>
-        <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink", @class="nav-link" })</li>
-    </ul>
+<ul class="navbar-nav navbar-right">
+    <a href="@Url.Action("Index", "Cart")" class="btn btn-light">
+        <i class="fa-solid fa-cart-shopping"></i> Cart
+    </a>
+    <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink", @class = "nav-link" })</li>
+    <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink", @class = "nav-link" })</li>
+</ul>
 }
+

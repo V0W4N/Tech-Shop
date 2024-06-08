@@ -7,6 +7,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Tech_Shop.Models;
+using Tech_Shop.Services;
 
 namespace Tech_Shop.Controllers
 {
@@ -15,15 +16,19 @@ namespace Tech_Shop.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private CartService _cartService = new CartService();
+        private OrderService _orderService = new OrderService();
 
         public ManageController()
         {
         }
 
-        public ManageController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
+        public ManageController(ApplicationUserManager userManager, ApplicationSignInManager signInManager, OrderService orderService, CartService cartService)
         {
             UserManager = userManager;
             SignInManager = signInManager;
+            _cartService = cartService;
+            _orderService = orderService;
         }
 
         public ApplicationSignInManager SignInManager
@@ -320,6 +325,15 @@ namespace Tech_Shop.Controllers
             }
             var result = await UserManager.AddLoginAsync(User.Identity.GetUserId(), loginInfo.Login);
             return result.Succeeded ? RedirectToAction("ManageLogins") : RedirectToAction("ManageLogins", new { Message = ManageMessageId.Error });
+        }
+        public ActionResult Purchases()
+        {
+            // Retrieve purchases made by the current user
+            var userId = User.Identity.GetUserId();
+            var purchases = _orderService.GetOrdersByUser(userId);
+
+            // Pass the list of purchases to the view
+            return View(purchases);
         }
 
         protected override void Dispose(bool disposing)

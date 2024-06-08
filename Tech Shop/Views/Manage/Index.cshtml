@@ -4,7 +4,7 @@
 }
 
 <main aria-labelledby="title">
-    <h2 id="title">@ViewBag.Title.</h2>
+    <h2 id="title">@ViewBag.Title</h2>
 
     <p class="text-success">@ViewBag.StatusMessage</p>
     <div>
@@ -13,23 +13,27 @@
         <dl class="dl-horizontal">
             <dt>Password:</dt>
             <dd>
-                [
                 @if (Model.HasPassword)
                 {
-                    @Html.ActionLink("Change your password", "ChangePassword")
+                    @Html.ActionLink("Change your password", "ChangePassword", routeValues: new { }, htmlAttributes: new { @class = "btn btn-secondary" });
                 }
                 else
                 {
-                    @Html.ActionLink("Create", "SetPassword")
+                    @Html.ActionLink("Create", "SetPassword", routeValues: new { }, htmlAttributes: new { @class = "btn btn-success" })
                 }
-                ]
             </dd>
             <dt>External Logins:</dt>
             <dd>
-                @Model.Logins.Count [
-                @Html.ActionLink("Manage", "ManageLogins") ]
+                @Model.Logins.Count
+                @Html.ActionLink("Manage", "ManageLogins")
             </dd>
-           
+
         </dl>
+    </div>
+    <div>
+        <h4>Manage Your Purchases</h4>
+        <hr />
+        <p>Show all purchases made from this account:</p>
+        @Html.ActionLink("View Purchases", "Purchases", "Manage", new { }, new { @class = "btn btn-primary" })
     </div>
 </main>

@@ -4,9 +4,11 @@ using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
 using Owin;
 using System;
+using System.Web;
 using System.Web.Services.Description;
 using Tech_Shop.Interfaces;
 using Tech_Shop.Mocks;
+using Tech_Shop.Services;
 
 [assembly: OwinStartupAttribute(typeof(Tech_Shop.Startup))]
 namespace Tech_Shop
@@ -17,6 +19,10 @@ namespace Tech_Shop
         {
             services.AddTransient<IAllDevices, MockDevices>();
             services.AddTransient<IDeviceCategory, MockCategory>();
+            services.AddTransient<HttpContextBase>(_ => new HttpContextWrapper(HttpContext.Current));
+            services.AddTransient<CartService>();
+            services.AddTransient<OrderService>();
+            services.AddScoped<OrderService>();
         }
         public void Configuration(IAppBuilder app)
         {

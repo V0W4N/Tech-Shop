@@ -1,0 +1,45 @@
+﻿@model IEnumerable<Tech_Shop.Models.CartItem>
+
+@{
+    ViewBag.Title = "Your Cart";
+}
+
+<h2>Your Cart</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Product.Name</td>
+                <td>
+                    @using (Html.BeginForm("UpdateCart", "Cart", FormMethod.Post))
+                    {
+                        @Html.Hidden("productId", item.ProductId)
+                        <input type="number" name="quantity" value="@item.Quantity" class="form-control" style="display: inline-block; width: auto;" />
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    }
+                </td>
+                <td>
+                    @using (Html.BeginForm("DeleteFromCart", "Cart", FormMethod.Post))
+                    {
+                        @Html.Hidden("productId", item.ProductId)
+                        <button type="submit" class="btn btn-danger">Remove</button>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@using (Html.BeginForm("ConfirmPurchase", "Cart", FormMethod.Post))
+{
+    <button type="submit" class="btn btn-success" onclick="return confirm('Are you sure you want to confirm the purchase?');">Confirm Purchase</button>
+}
