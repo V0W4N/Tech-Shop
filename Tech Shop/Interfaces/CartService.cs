@@ -57,7 +57,7 @@ namespace Tech_Shop.Services
             var cartItem = Cart.SingleOrDefault(c => c.ProductId == productId);
             if (cartItem == null)
             {
-                Cart.Add(new CartItem { ProductId = productId, Quantity = 1 });
+                Cart.Add(new CartItem { ProductId = productId, Quantity = 1 , Product = product});
             }
             else
             {

@@ -38,6 +38,7 @@ namespace Tech_Shop.Models
         public DbSet<CartData> CartData { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<WishlistData> WishlistData { get; set; }
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -50,6 +51,7 @@ namespace Tech_Shop.Models
 
             // Disable pluralizing table names if necessary
         }
+
     }
 
 }

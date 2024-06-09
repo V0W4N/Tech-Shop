@@ -7,24 +7,6 @@ using Tech_Shop.Models;
 
 namespace Tech_Shop.Models
 {
-    public class CartItem
-    {
-        public int ProductId { get; set; }
-        public Product Product { get; set; }
-        public int Quantity { get; set; }
-        public CartItem() { }
-        public CartItem(int productId, int quantity)
-        {
-            ProductId = productId;
-            Quantity = quantity;
-        }
-    }
-    public class CartData
-    {
-        [Key]
-        public string UserId { get; set; }
-        public string CartDataString { get; set; }
-    }
     public class Order
     {
         public int Id { get; set; }

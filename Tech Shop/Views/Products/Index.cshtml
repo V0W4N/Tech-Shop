@@ -21,7 +21,7 @@
             @Html.DisplayNameFor(model => model.Products.First().Category)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Products.First().ProductId)
+            @Html.DisplayNameFor(model => model.Products.First().Price)
         </th>
         <th style="width: 200px;">Quantity</th>
         <th></th>
@@ -30,7 +30,7 @@
     @foreach (var item in Model.Products)
     {
         var cartItem = Model.CartItems.SingleOrDefault(ci => ci.ProductId == item.Id);
-
+        var wishlistItem = Model.WishItems.SingleOrDefault(ci => ci.ProductId == item.Id);
         <tr>
             <td>
                 @Html.DisplayFor(model => item.Name)
@@ -42,7 +42,7 @@
                 @Html.DisplayFor(model => item.Category)
             </td>
             <td>
-                @Html.DisplayFor(model => item.Id)
+                @Html.DisplayFor(model => item.Price)
             </td>
             <td>
                 @if (cartItem != null)
@@ -67,7 +67,28 @@
                         <button type="submit" class="btn btn-secondary">Add to cart</button>
                     }
                 }
-            </td>
+
+                @if (wishlistItem != null)
+                {
+                    using (Html.BeginForm("RemoveFromWishlist", "Products", FormMethod.Post, new { @class = "form-inline" }))
+                    {
+                        @Html.Hidden("id", item.Id)
+                        <button type="submit" class="nav-link">
+                            <i class="fas fa-heart"></i> Remove
+                        </button>
+                    }
+                }
+                else
+                {
+                    using (Html.BeginForm("AddToWishlist", "Products", FormMethod.Post, new { @class = "form-inline" }))
+                    {
+                        @Html.Hidden("id", item.Id)
+                        <button type="submit" class="nav-link">
+                            <i class="far fa-heart"></i> I want this
+                        </button>
+                    }
+                }
+                </td>
             <td>
 
                 @if (Model.IsAdmin)

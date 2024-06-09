@@ -17,6 +17,11 @@
         @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage", @class = "nav-link" })
     </li>
     <li>
+        <a href="@Url.Action("Index", "Wishlist")" class="nav-link">
+            <i class="fa-solid fa-heart"></i>
+        </a>
+    </li>
+    <li>
         <a href="@Url.Action("Index", "Cart")" class="btn btn-light">
             <i class="fa-solid fa-cart-shopping"></i> Cart
         </a>
@@ -28,6 +33,9 @@
 else
 {
 <ul class="navbar-nav navbar-right">
+        <a href="@Url.Action("Index", "Wishlist")" class="nav-link">
+            <i class="fa-solid fa-heart"></i>
+        </a>
     <a href="@Url.Action("Index", "Cart")" class="btn btn-light">
         <i class="fa-solid fa-cart-shopping"></i> Cart
     </a>

@@ -19,6 +19,7 @@ namespace Tech_Shop.Controllers
         private ApplicationDbContext _db = new ApplicationDbContext();
         private CartService _cartService = new CartService();
         private OrderService _orderService = new OrderService();
+        private WishlistService _wishlistService = new WishlistService();
         private List<string> roleList = new List<string> { "Moderator", "Admin", "PowerUser" };
 
 
@@ -27,11 +28,13 @@ namespace Tech_Shop.Controllers
         {
             var products = _db.Products.ToList();
             var cartItems = _cartService.GetCartItems();
+            var wlItems = _wishlistService.GetWishlistItems();
 
             var list = new ProductListWithQ
             {
                 Products = products,
                 CartItems = cartItems,
+                WishItems = wlItems,
                 IsAdmin = IsInRoleList(roleList, User)
             };
 
@@ -61,6 +64,29 @@ namespace Tech_Shop.Controllers
                 TempData["AddedProductName"] = product.Name;
             }
 
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public ActionResult AddToWishlist(int id)
+        {
+            Product product = _db.Products.Find(id);
+            if (product == null)
+            {
+                return HttpNotFound();
+            }
+            if (product != null)
+            {
+                _wishlistService.AddToWishlist(id, product);
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public ActionResult RemoveFromWishlist(int id)
+        {
+            _wishlistService.RemoveFromWishlist(id);
             return RedirectToAction("Index");
         }
 

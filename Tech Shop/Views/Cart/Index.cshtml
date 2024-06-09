@@ -11,7 +11,8 @@
         <tr>
             <th>Product</th>
             <th>Quantity</th>
-            <th>Actions</th>
+            <th>Calculated Price</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -28,6 +29,9 @@
                     }
                 </td>
                 <td>
+                    @(item.Product.Price*item.Quantity)
+                </td>
+                <td>
                     @using (Html.BeginForm("DeleteFromCart", "Cart", FormMethod.Post))
                     {
                         @Html.Hidden("productId", item.ProductId)
@@ -39,6 +43,12 @@
     </tbody>
 </table>
 
+<h4>
+    Total
+</h4>
+<h5>
+    @Model.Sum(i => (i.Quantity * i.Product.Price))
+</h5>
 @using (Html.BeginForm("ConfirmPurchase", "Cart", FormMethod.Post))
 {
     <button type="submit" class="btn btn-success" onclick="return confirm('Are you sure you want to confirm the purchase?');">Confirm Purchase</button>
