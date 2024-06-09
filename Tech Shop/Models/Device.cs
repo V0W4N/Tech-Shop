@@ -27,7 +27,7 @@ namespace Tech_Shop.Models
         [ForeignKey("Category")]
         public int CategoryId { get; set; }
         public virtual DeviceCategory Category { get; set; }
-        public virtual ICollection<DeviceCategoryAttributeValue> AtributeValues{ get; set ;}
+        public virtual ICollection<DeviceCategoryAttributeValue> AttributeValues{ get; set ;}
     }
 
 }

@@ -3,12 +3,12 @@
     ViewBag.Title = "Delete";
 }
 
-@model Tech_Shop.Models.Device
+@model Online_Tech_Shop.Models.DeviceViewModel
 <h2>Device deletion</h2>
 <dl>
     <dt>Name</dt>
     <dd>
-        @Html.DisplayFor(model => model.Name)
+        @Html.DisplayFor(model => model.DeviceName)
     </dd>
 
     <dt>Price</dt>
@@ -18,11 +18,11 @@
 
     <dt>Short Description</dt>
     <dd>
-        @Html.DisplayFor(model => model.shortDescription)
+        @Html.DisplayFor(model => model.Manufacturer)
     </dd>
     <dt>Description</dt>
     <dd>
-        @Html.DisplayFor(model => model.description)
+        @Html.DisplayFor(model => model.Description)
     </dd>
 </dl>
 

@@ -4,8 +4,12 @@
 
 
     <h3>Распродажа Имбы</h3>
-    <p>@Html.ActionLink("Кнопка которая добавляет", "Create")</p>
+    <p>@Html.ActionLink("Кнопка которая добавляет устройство", "Create")</p>
+    <p>@Html.ActionLink("Кнопка которая переходит на список категорий", "Category")</p>
+    
 
+    <p>@Model.Devices.First().Category.CategoryAttributes.First().AttributeName</p>
+    <p>@Model.Devices.First().AttributeValues.First().Value</p>
     <form method="get">
         <div class="form-inline">
             <label class="control-label">Название: </label>
