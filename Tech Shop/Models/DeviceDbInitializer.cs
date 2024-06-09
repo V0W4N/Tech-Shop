@@ -9,7 +9,7 @@ using Tech_Shop.DBModel.Seed;
 
 namespace Tech_Shop.Models
 {
-    public class DeviceDbInitializer : DropCreateDatabaseAlways<DeviceContext>
+    public class DeviceDbInitializer : CreateDatabaseIfNotExists<DeviceContext>
     {
         protected override void Seed(DeviceContext db)
         {

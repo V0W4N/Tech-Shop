@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.Identity;
+using Online_Tech_Shop.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -12,6 +13,7 @@ using System.Web.Security;
 using Tech_Shop.DBModel.Seed;
 using Tech_Shop.Models;
 using Tech_Shop.Services;
+using Tech_Shop.ViewModels;
 
 namespace Tech_Shop.Controllers
 {
@@ -50,6 +52,145 @@ namespace Tech_Shop.Controllers
             return View(list);
         }
 
+        public ActionResult Create()
+        {
+            ViewBag.CategoryId = new SelectList(db.DeviceCategories, "CategoryId", "CategoryName");
+            ViewBag.Attributes = db.DeviceCategoryAttributes.Select(a => new AttributeViewModel
+            {
+                AttributeId = a.AttributeId,
+                AttributeName = a.AttributeName
+            }).ToList();
+            return View(new DeviceViewModel { AttributeValues = new List<DeviceCategoryAttributeValue>() });
+        }
+
+        // POST: Device/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(DeviceViewModel deviceViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var device = new Device
+                {
+                    DeviceName = deviceViewModel.DeviceName,
+                    Manufacturer = deviceViewModel.Manufacturer,
+                    Description = deviceViewModel.Description,
+                    Price = deviceViewModel.Price,
+                    CategoryId = deviceViewModel.CategoryId,
+                    AttributeValues = deviceViewModel.AttributeValues.Select(a => new DeviceCategoryAttributeValue
+                    {
+                        AttributeId = a.AttributeId,
+                        Value = a.Value
+                    }).ToList()
+                };
+
+                db.Devices.Add(device);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+
+            ViewBag.CategoryId = new SelectList(db.DeviceCategories, "CategoryId", "CategoryName", deviceViewModel.CategoryId);
+            ViewBag.Attributes = db.DeviceCategoryAttributes.Select(a => new AttributeViewModel
+            {
+                AttributeId = a.AttributeId,
+                AttributeName = a.AttributeName
+            }).ToList();
+            return View(deviceViewModel);
+        }
+
+
+        [HttpGet]
+        public ActionResult Edit(int? id)
+        {
+            if (id == null) return HttpNotFound();
+            var device = db.Devices.Find(id);
+            if (device == null) return HttpNotFound();
+            List<AttributeViewModel> attributes = new List<AttributeViewModel>();
+            foreach (var attribute in device.AttributeValues)
+            {
+                attributes.Add(new AttributeViewModel()
+                {
+                    AttributeId = attribute.AttributeId,
+                    AttributeName = attribute.Attribute.AttributeName,
+                    AttributeValue = attribute.Value
+                });
+
+
+            }
+            var model = new DeviceEditViewModel
+            {
+                DeviceId = device.DeviceId,
+                DeviceName = device.DeviceName,
+                Manufacturer = device.Manufacturer,
+                Description = device.Description,
+                Price = device.Price,
+                CategoryId = device.CategoryId,
+                CategoryName = device.Category.CategoryName,
+                Attributes = attributes,
+                AttributeValues = device.AttributeValues.ToList()
+            };
+            ViewBag.Categories = new SelectList(db.DeviceCategories, "CategoryId", "CategoryName", model.CategoryId);
+            var categories = db.DeviceCategories.ToList();
+            var categoryItems = categories.Select(c => new SelectListItem
+            {
+                Value = c.CategoryId.ToString(),
+                Text = c.CategoryName
+            });
+            ViewBag.CategoryItems = categoryItems;
+            return View(model);
+        }
+
+        // POST: Devices/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(DeviceViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var device = db.Devices.Find(model.DeviceId);
+                if (device == null) return HttpNotFound();
+                device.DeviceName = model.DeviceName;
+                device.Manufacturer = model.Manufacturer;
+                device.Description = model.Description;
+                device.Price = model.Price;
+                device.CategoryId = model.CategoryId;
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            ViewBag.Categories = new SelectList(db.DeviceCategories, "CategoryId", "CategoryName", model.CategoryId);
+            return View(model);
+        }
+
+        // GET: Devices/Delete/5
+        public ActionResult Delete(int? id)
+        {
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            var device = db.Devices.Find(id);
+            if (device == null) return HttpNotFound();
+            var model = new DeviceViewModel
+            {
+                DeviceId = device.DeviceId,
+                DeviceName = device.DeviceName,
+                Manufacturer = device.Manufacturer,
+                Description = device.Description,
+                Price = device.Price,
+                CategoryId = device.CategoryId,
+                CategoryName = device.Category.CategoryName,
+                AttributeValues = device.AttributeValues.ToList()
+            };
+            return View(model);
+        }
+
+        // POST: Devices/Delete/5
+        [HttpPost, ActionName("Delete")]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            var device = db.Devices.Find(id);
+            if (device == null) return HttpNotFound();
+            db.Devices.Remove(device);
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
 
         // POST: Products/AddToCart
         [HttpPost]
@@ -115,46 +256,6 @@ namespace Tech_Shop.Controllers
             return View(device);
         }
 
-        // GET: Products/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Products/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [Authorize]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,Description,Category,ProductId")] Product product)
-        {
-            if (ModelState.IsValid)
-            {
-                _db.Products.Add(product);
-                _db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-
-            return View(product);
-        }
-
-        // GET: Products/Edit/5
-        [Authorize]
-        public ActionResult Edit(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Device device = db.Devices.Find(id);
-            if (device == null)
-            {
-                return HttpNotFound();
-            }
-            return View(device);
-        }
-
         [Authorize]
         public bool ConfirmPurchase()
         {
@@ -187,48 +288,6 @@ namespace Tech_Shop.Controllers
                 return false;
             }
         }
-        [HttpPost]
-        [Authorize]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,DeviceName,Description,Category,DeviceId")] Device device)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Entry(device).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            return View(device);
-        }
-
-        // GET: Products/Delete/5
-        [Authorize]
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Device device = db.Devices.Find(id);
-            if (device == null)
-            {
-                return HttpNotFound();
-            }
-            return View(device);
-        }
-
-        // POST: Products/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        [Authorize]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            Device device = db.Devices.Find(id);
-            db.Devices.Remove(device);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
-
         protected override void Dispose(bool disposing)
         {
             if (disposing)

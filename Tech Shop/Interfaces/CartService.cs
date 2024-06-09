@@ -121,7 +121,7 @@ namespace Tech_Shop.Services
                     var device = db.Devices.Find(deviceId);
                     if (device == null)
                     {
-                        throw new Exception($"Device with ID {deviceId} not found");
+                        continue;
                     }
 
                     Cart.Add(new CartItem { DeviceId = deviceId, Quantity = quantity, Device = device });
