@@ -55,33 +55,46 @@ namespace Tech_Shop.Controllers
         public ActionResult Create()
         {
             ViewBag.CategoryId = new SelectList(db.DeviceCategories, "CategoryId", "CategoryName");
-            ViewBag.Attributes = db.DeviceCategoryAttributes.Select(a => new AttributeViewModel
+            var attr = db.DeviceCategoryAttributes.Select(a => new AttributeViewModel
             {
                 AttributeId = a.AttributeId,
                 AttributeName = a.AttributeName
             }).ToList();
-            return View(new DeviceViewModel { AttributeValues = new List<DeviceCategoryAttributeValue>() });
+            /*
+             * var devices = db.Devices.Include(d => d.Category)
+                           .Include(d => d.AttributeValues.Select(av => av.Attribute))
+                            .ToList();*/
+
+            DeviceCreateViewModel dcvm = new DeviceCreateViewModel { Attributes = attr };
+            return View(dcvm);
         }
 
         // POST: Device/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(DeviceViewModel deviceViewModel)
+        public ActionResult Create(DeviceCreateViewModel deviceViewModel)
         {
             if (ModelState.IsValid)
             {
-                var device = new Device
+                List<DeviceCategoryAttributeValue> attributeValues = new List<DeviceCategoryAttributeValue>();
+                foreach(var item in deviceViewModel.Attributes)
+                {
+
+                    attributeValues.Add(new DeviceCategoryAttributeValue
+                    {
+                        AttributeId = item.AttributeId,
+                        Value = item.AttributeValue
+
+                    });
+                }
+                Device device = new Device
                 {
                     DeviceName = deviceViewModel.DeviceName,
                     Manufacturer = deviceViewModel.Manufacturer,
                     Description = deviceViewModel.Description,
                     Price = deviceViewModel.Price,
                     CategoryId = deviceViewModel.CategoryId,
-                    AttributeValues = deviceViewModel.AttributeValues.Select(a => new DeviceCategoryAttributeValue
-                    {
-                        AttributeId = a.AttributeId,
-                        Value = a.Value
-                    }).ToList()
+                    AttributeValues = attributeValues
                 };
 
                 db.Devices.Add(device);

@@ -229,7 +229,6 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\CartController.cs" />
     <Compile Include="Controllers\CategoryController.cs" />
-    <Compile Include="Controllers\DeviceController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
@@ -246,7 +245,7 @@
     <Compile Include="Interfaces\OrderService.cs" />
     <Compile Include="Interfaces\WishlistService.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
-    <Compile Include="Models\AtributeViewModel.cs" />
+    <Compile Include="Models\AttributeViewModel.cs" />
     <Compile Include="Models\CartModels.cs" />
     <Compile Include="Models\CategoryViewModel.cs" />
     <Compile Include="Models\DeviceCategoryAttribute.cs" />
@@ -265,6 +264,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Models\DeviceListViewModel.cs" />
+    <Compile Include="ViewModels\DeviceCreateViewModel.cs" />
     <Compile Include="ViewModels\DeviceEditViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -352,15 +352,9 @@
     <Content Include="Views\Manage\Purchases.cshtml" />
     <Content Include="Views\Wishlist\Index.cshtml" />
     <Content Include="Views\Category\List.cshtml" />
-    <Content Include="Views\Device\Create.cshtml" />
-    <Content Include="Views\Device\Delete.cshtml" />
-    <Content Include="Views\Device\Edit.cshtml" />
-    <Content Include="Views\Device\Index.cshtml" />
-    <Content Include="Views\Device\List.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\DeviceContext\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />
