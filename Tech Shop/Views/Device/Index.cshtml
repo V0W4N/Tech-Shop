@@ -1,0 +1,36 @@
+﻿@using Tech_Shop.Models
+@model IEnumerable<Online_Tech_Shop.Models.DeviceViewModel>
+
+<table>
+    <tr>
+        <th>Device Name</th>
+        <th>Manufacturer</th>
+        <th>Description</th>
+        <th>Price</th>
+        <th>Category</th>
+        <th>Attributes</th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@Html.DisplayFor(modelItem => item.DeviceName)</td>
+            <td>@Html.DisplayFor(modelItem => item.Manufacturer)</td>
+            <td>@Html.DisplayFor(modelItem => item.Description)</td>
+            <td>@Html.DisplayFor(modelItem => item.Price)</td>
+            <td>@Html.DisplayFor(modelItem => item.CategoryName)</td>
+            <td>
+                @foreach (var attribute in item.AttributeValues)
+                {
+                    <div>@attribute.Attribute.AttributeName: @attribute.Value</div>
+                }
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.DeviceId }) 
+                @Html.ActionLink("Details", "Details", new { id = item.DeviceId }) 
+                @Html.ActionLink("Delete", "Delete", new { id = item.DeviceId })
+            </td>
+        </tr>
+    }
+</table>
