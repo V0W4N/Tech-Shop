@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Helpers;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
@@ -26,7 +27,7 @@ namespace Tech_Shop.Controllers
             _session = bl.GetSessionBL();
         }
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
+        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
@@ -34,36 +35,39 @@ namespace Tech_Shop.Controllers
 
         public ApplicationSignInManager SignInManager
         {
-            get
-            {
-                return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
-            }
-            private set 
-            { 
-                _signInManager = value; 
-            }
+            get => _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
+            private set => _signInManager = value;
         }
 
         public ApplicationUserManager UserManager
         {
-            get
-            {
-                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            }
-            private set
-            {
-                _userManager = value;
-            }
+            get => _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            private set => _userManager = value;
         }
 
-        //
-        // GET: /Account/Login
+        [HttpGet]
         [AllowAnonymous]
-        public ActionResult Login(string returnUrl)
+        public async Task<ActionResult> Login(string returnUrl)
         {
             ViewBag.ReturnUrl = returnUrl;
+
+            var cookie = Request.Cookies["LoginCookie"];
+            if (cookie != null)
+            {
+                var email = cookie["Email"];
+                var password = cookie["Password"];
+                if (!string.IsNullOrEmpty(email) && !string.IsNullOrEmpty(password))
+                {
+                    var result = await SignInManager.PasswordSignInAsync(email, password, isPersistent: true, shouldLockout: false);
+                    if (result == SignInStatus.Success)
+                    {
+                        return RedirectToLocal(returnUrl);
+                    }
+                }
+            }
             return View();
         }
+
 
         //
         // POST: /Account/Login
@@ -83,6 +87,10 @@ namespace Tech_Shop.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
+                    if (model.RememberMe)
+                    {
+                        SetLoginCookie(model.Email, model.Password);
+                    }
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");
@@ -94,7 +102,17 @@ namespace Tech_Shop.Controllers
                     return View(model);
             }
         }
+        private void SetLoginCookie(string email, string password)
+        {
+            var cookie = new HttpCookie("LoginCookie")
+            {
+                ["Email"] = email,
+                ["Password"] = password,
+                Expires = DateTime.Now.AddHours(1) // Set the expiration time
+            };
 
+            Response.Cookies.Add(cookie);
+        }
         //
         // GET: /Account/VerifyCode
         [AllowAnonymous]
@@ -395,6 +413,11 @@ namespace Tech_Shop.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult LogOff()
         {
+            var cookie = new HttpCookie("LoginCookie")
+            {
+                Expires = DateTime.Now.AddDays(-1) // Expire the cookie immediately
+            };
+            Response.Cookies.Add(cookie);
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             return RedirectToAction("Index", "Home");
         }
@@ -431,13 +454,7 @@ namespace Tech_Shop.Controllers
         // Used for XSRF protection when adding external logins
         private const string XsrfKey = "XsrfId";
 
-        private IAuthenticationManager AuthenticationManager
-        {
-            get
-            {
-                return HttpContext.GetOwinContext().Authentication;
-            }
-        }
+        private IAuthenticationManager AuthenticationManager => HttpContext.GetOwinContext().Authentication;
 
         private void AddErrors(IdentityResult result)
         {

@@ -1,0 +1,38 @@
+﻿@model IEnumerable<Tech_Shop.Models.WishlistItem>
+@{
+    ViewBag.Title = "Wishlisted items";
+}
+
+<h2>Your Cart</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Product.Name</td>
+                <td>
+                    @using (Html.BeginForm("AddToCart", "Wishlist", FormMethod.Post))
+                    {
+                        @Html.Hidden("id", item.ProductId)
+                        <button type="submit" class="btn btn-primary">Add to cart</button>
+                    }
+                </td>
+                <td>
+                    @using (Html.BeginForm("RemoveFromWishlist", "Wishlist", FormMethod.Post))
+                    {
+                        @Html.Hidden("id", item.ProductId)
+                        <button type="submit" class="btn btn-danger">Remove</button>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

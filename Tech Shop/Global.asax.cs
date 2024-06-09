@@ -26,6 +26,7 @@ namespace Tech_Shop
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             Database.SetInitializer(new DeviceDbInitializer());
+            UnityConfig.RegisterComponents();
         }
        
     }

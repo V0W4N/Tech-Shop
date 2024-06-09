@@ -1,17 +1,14 @@
-﻿@model Tech_Shop.Models.ProductList
-
-@{
-    ViewBag.Title = "Index";
-}
+﻿@model Tech_Shop.Models.ProductListWithQ
 
 <h2>Index</h2>
 <p>
     @if (Model.IsAdmin)
     {
         @Html.ActionLink("Create New", "Create")
-        //@Html.ActionLink("testing", "test")
     }
 </p>
+
+
 <table class="table">
     <tr>
         <th>
@@ -24,13 +21,16 @@
             @Html.DisplayNameFor(model => model.Products.First().Category)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Products.First().ProductId)
+            @Html.DisplayNameFor(model => model.Products.First().Price)
         </th>
+        <th style="width: 200px;">Quantity</th>
         <th></th>
     </tr>
 
     @foreach (var item in Model.Products)
     {
+        var cartItem = Model.CartItems.SingleOrDefault(ci => ci.ProductId == item.Id);
+        var wishlistItem = Model.WishItems.SingleOrDefault(ci => ci.ProductId == item.Id);
         <tr>
             <td>
                 @Html.DisplayFor(model => item.Name)
@@ -42,18 +42,76 @@
                 @Html.DisplayFor(model => item.Category)
             </td>
             <td>
-                @Html.DisplayFor(model => item.ProductId)
+                @Html.DisplayFor(model => item.Price)
+            </td>
+            <td>
+                @if (cartItem != null)
+                {
+                    using (Html.BeginForm("RemoveFromCart", "Products", FormMethod.Post, new { @class = "share-button" }))
+                    {
+                        @Html.Hidden("id", item.Id)
+                        <button type="submit" class="btn btn-outline-danger">-</button>
+                    }
+                    <h5 class="share-button">@cartItem.Quantity</h5>
+                    using (Html.BeginForm("AddToCart", "Products", FormMethod.Post, new { @class = "share-button" }))
+                    {
+                        @Html.Hidden("id", item.Id)
+                        <button type="submit" class="btn btn-outline-success">+</button>
+                    }
+                }
+                else
+                {
+                    using (Html.BeginForm("AddToCart", "Products", FormMethod.Post, new { @class = "form-inline" }))
+                    {
+                        @Html.Hidden("id", item.Id)
+                        <button type="submit" class="btn btn-secondary">Add to cart</button>
+                    }
+                }
+
+                @if (wishlistItem != null)
+                {
+                    using (Html.BeginForm("RemoveFromWishlist", "Products", FormMethod.Post, new { @class = "form-inline" }))
+                    {
+                        @Html.Hidden("id", item.Id)
+                        <button type="submit" class="nav-link">
+                            <i class="fas fa-heart"></i> Remove
+                        </button>
+                    }
+                }
+                else
+                {
+                    using (Html.BeginForm("AddToWishlist", "Products", FormMethod.Post, new { @class = "form-inline" }))
+                    {
+                        @Html.Hidden("id", item.Id)
+                        <button type="submit" class="nav-link">
+                            <i class="far fa-heart"></i> I want this
+                        </button>
+                    }
+                }
+                </td>
+            <td>
+
+                @if (Model.IsAdmin)
+                {
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "form-inline" })
+                    <span>|</span>
+                    @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "form-inline" })
+                    <span>|</span>
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "form-inline" })
+                }
             </td>
         </tr>
-        if (Model.IsAdmin)
-        {
-        <td>
-            
-            @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-        </td>
-
-        }
     }
 </table>
+
+<style>
+
+    .quantity-input {
+        width: 50px; /* Adjust width as needed */
+        margin: 0 10px; /* Adjust margin as needed */
+    }
+
+    .share-button {
+        display: inline-block;
+    }
+</style>

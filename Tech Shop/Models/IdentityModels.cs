@@ -1,4 +1,6 @@
-﻿using System.Data.Entity;
+﻿using System.Collections.Generic;
+using System.Data.Entity;
+using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
@@ -16,6 +18,8 @@ namespace Tech_Shop.Models
             // Add custom user claims here
             return userIdentity;
         }
+        public virtual ICollection<Order> Orders { get; set; } // Navigation property
+
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
@@ -30,6 +34,24 @@ namespace Tech_Shop.Models
             return new ApplicationDbContext();
         }
 
-        public System.Data.Entity.DbSet<Tech_Shop.Models.Product> Products { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<CartData> CartData { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<WishlistData> WishlistData { get; set; }
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // Configure the one-to-many relationship
+            modelBuilder.Entity<Order>()
+                .HasRequired(o => o.User)
+                .WithMany(u => u.Orders)
+                .HasForeignKey(o => o.UserId);
+
+            // Disable pluralizing table names if necessary
+        }
+
     }
+
 }
