@@ -19,22 +19,22 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td>@item.Product.Name</td>
+                <td>@item.Device.DeviceName</td>
                 <td>
                     @using (Html.BeginForm("UpdateCart", "Cart", FormMethod.Post))
                     {
-                        @Html.Hidden("productId", item.ProductId)
+                        @Html.Hidden("productId", item.DeviceId)
                         <input type="number" name="quantity" value="@item.Quantity" class="form-control" style="display: inline-block; width: auto;" />
                         <button type="submit" class="btn btn-primary">Update</button>
                     }
                 </td>
                 <td>
-                    @(item.Product.Price*item.Quantity)
+                    @(item.Device.Price*item.Quantity)
                 </td>
                 <td>
                     @using (Html.BeginForm("DeleteFromCart", "Cart", FormMethod.Post))
                     {
-                        @Html.Hidden("productId", item.ProductId)
+                        @Html.Hidden("productId", item.DeviceId)
                         <button type="submit" class="btn btn-danger">Remove</button>
                     }
                 </td>
@@ -47,7 +47,7 @@
     Total
 </h4>
 <h5>
-    @Model.Sum(i => (i.Quantity * i.Product.Price))
+    @Model.Sum(i => (i.Quantity * i.Device.Price))
 </h5>
 @using (Html.BeginForm("ConfirmPurchase", "Cart", FormMethod.Post))
 {

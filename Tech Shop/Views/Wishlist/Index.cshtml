@@ -17,18 +17,18 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td>@item.Product.Name</td>
+                <td>@item.Device.DeviceName</td>
                 <td>
                     @using (Html.BeginForm("AddToCart", "Wishlist", FormMethod.Post))
                     {
-                        @Html.Hidden("id", item.ProductId)
+                        @Html.Hidden("id", item.DeviceId)
                         <button type="submit" class="btn btn-primary">Add to cart</button>
                     }
                 </td>
                 <td>
                     @using (Html.BeginForm("RemoveFromWishlist", "Wishlist", FormMethod.Post))
                     {
-                        @Html.Hidden("id", item.ProductId)
+                        @Html.Hidden("id", item.DeviceId)
                         <button type="submit" class="btn btn-danger">Remove</button>
                     }
                 </td>

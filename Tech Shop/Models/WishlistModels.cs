@@ -8,13 +8,9 @@ namespace Tech_Shop.Models
 {
     public class WishlistItem
     {
-        public int ProductId { get; set; }
-        public Product Product { get; set; }
+        public int DeviceId { get; set; }
+        public Device Device { get; set; }
         public WishlistItem() { }
-        public WishlistItem(int productId)
-        {
-            ProductId = productId;
-        }
     }
     public class WishlistData
     {

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Web;
+using Tech_Shop.DBModel.Seed;
 using Tech_Shop.Models;
 
 namespace Tech_Shop.Services
@@ -12,7 +13,9 @@ namespace Tech_Shop.Services
     {
         private readonly HttpContextBase _context;
         private bool _reqestedFromAccount = false;
-        private ApplicationDbContext db = new ApplicationDbContext();
+        private ApplicationDbContext _db = new ApplicationDbContext();
+        private DeviceContext db = new DeviceContext();
+
 
         public CartService(HttpContextBase context = null)
         {
@@ -26,7 +29,7 @@ namespace Tech_Shop.Services
                 if (isAuth)
                 {
                     string userId = _context.User.Identity.GetUserId();
-                    var data = db.CartData.SingleOrDefault(cd => cd.UserId == userId);
+                    var data = _db.CartData.SingleOrDefault(cd => cd.UserId == userId);
                     if (data != null) UnpackCartData(data.CartDataString);
                     else SetCartCookie();
                     }
@@ -52,12 +55,12 @@ namespace Tech_Shop.Services
             return Cart;
         }
 
-        public void AddToCart(int productId, Product product)
+        public void AddToCart(int deviceId, Device device)
         {
-            var cartItem = Cart.SingleOrDefault(c => c.ProductId == productId);
+            var cartItem = Cart.SingleOrDefault(c => c.DeviceId == deviceId);
             if (cartItem == null)
             {
-                Cart.Add(new CartItem { ProductId = productId, Quantity = 1 , Product = product});
+                Cart.Add(new CartItem { DeviceId = deviceId, Quantity = 1 , Device = device});
             }
             else
             {
@@ -65,18 +68,18 @@ namespace Tech_Shop.Services
             }
             SetCartCookie();
         }
-        public void UpdateCart(int productId, int quantity)
+        public void UpdateCart(int deviceId, int quantity)
         {
-            var cartItem = Cart.SingleOrDefault(c => c.ProductId == productId);
+            var cartItem = Cart.SingleOrDefault(c => c.DeviceId == deviceId);
             if (cartItem != null)
             {
                 cartItem.Quantity = quantity;
             }
             SetCartCookie();
         }
-        public void RemoveFromCart(int productId)
+        public void RemoveFromCart(int deviceId)
         {
-            var cartItem = Cart.SingleOrDefault(c => c.ProductId == productId);
+            var cartItem = Cart.SingleOrDefault(c => c.DeviceId == deviceId);
             if (cartItem != null)
             {
                 if (cartItem.Quantity > 1)
@@ -91,9 +94,9 @@ namespace Tech_Shop.Services
             SetCartCookie();
         }
 
-        public void DeleteFromCart(int productId)
+        public void DeleteFromCart(int deviceId)
         {
-            var cartItem = Cart.SingleOrDefault(c => c.ProductId == productId);
+            var cartItem = Cart.SingleOrDefault(c => c.DeviceId == deviceId);
             if (cartItem != null)
             {
                Cart.Remove(cartItem);
@@ -102,7 +105,7 @@ namespace Tech_Shop.Services
         }
         public string CompactCartData()
         {
-            return string.Join("|", Cart.Select(item => $"{item.ProductId}-{item.Quantity}"));
+            return string.Join("|", Cart.Select(item => $"{item.DeviceId}-{item.Quantity}"));
         }
 
         public void UnpackCartData(string cartData)
@@ -113,15 +116,15 @@ namespace Tech_Shop.Services
             foreach (var item in items)
             {
                 var parts = item.Split('-');
-                if (parts.Length == 2 && int.TryParse(parts[0], out int productId) && int.TryParse(parts[1], out int quantity))
+                if (parts.Length == 2 && int.TryParse(parts[0], out int deviceId) && int.TryParse(parts[1], out int quantity))
                 {
-                    var product = db.Products.Find(productId);
-                    if (product == null)
+                    var device = db.Devices.Find(deviceId);
+                    if (device == null)
                     {
-                        throw new Exception($"Product with ID {productId} not found");
+                        throw new Exception($"Device with ID {deviceId} not found");
                     }
 
-                    Cart.Add(new CartItem { ProductId = productId, Quantity = quantity, Product = product });
+                    Cart.Add(new CartItem { DeviceId = deviceId, Quantity = quantity, Device = device });
 
                 }
             }
@@ -137,7 +140,7 @@ namespace Tech_Shop.Services
             string cookieData = CompactCartData();
             var cookie = new HttpCookie("CartCookie")
             {
-                ["Products"] = cookieData,
+                ["Devices"] = cookieData,
                 Expires = DateTime.MaxValue
             };
             _context.Response.Cookies.Add(cookie);
@@ -146,20 +149,20 @@ namespace Tech_Shop.Services
             {
                 string userId = _context.User.Identity.GetUserId();
 
-                var currCartData = db.CartData.SingleOrDefault(cd => cd.UserId == userId);
+                var currCartData = _db.CartData.SingleOrDefault(cd => cd.UserId == userId);
 
                 if (currCartData != null)
                 {
                     // User already has an entry, update it
                     currCartData.CartDataString = cookieData;
-                    db.Entry(currCartData).State = EntityState.Modified;
+                    _db.Entry(currCartData).State = EntityState.Modified;
                 }
                 else
                 {
                     // User does not have an entry, add a new entry
-                    db.CartData.Add(new CartData { UserId = userId, CartDataString = cookieData });
+                    _db.CartData.Add(new CartData { UserId = userId, CartDataString = cookieData });
                 }
-                db.SaveChanges();
+                _db.SaveChanges();
             }
         }
     }

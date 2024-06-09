@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using Tech_Shop.DBModel.Seed;
 using Tech_Shop.Models;
 using Tech_Shop.Services;
 
@@ -14,7 +15,8 @@ namespace Tech_Shop.Controllers
 {
         public class WishlistController : Controller
         {
-            private ApplicationDbContext db = new ApplicationDbContext();
+            private ApplicationDbContext _db = new ApplicationDbContext();
+            private DeviceContext db = new DeviceContext();
             private CartService _cartService = new CartService();
             private OrderService _orderService = new OrderService();
             private WishlistService _wishlistService = new WishlistService();
@@ -38,16 +40,16 @@ namespace Tech_Shop.Controllers
         [HttpPost]
         public ActionResult AddToCart(int id)
         {
-            Product product = db.Products.Find(id);
-            if (product == null)
+            Device device = db.Devices.Find(id);
+            if (device == null)
             {
                 return HttpNotFound();
             }
-            if (product != null)
+            if (device != null)
             {
-                _cartService.AddToCart(id, product);
+                _cartService.AddToCart(id, device);
                 _wishlistService.RemoveFromWishlist(id);
-                TempData["AddedProductName"] = product.Name;
+                TempData["AddedProductName"] = device.DeviceName;
             }
 
             return RedirectToAction("Index");

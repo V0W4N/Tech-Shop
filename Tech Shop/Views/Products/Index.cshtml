@@ -12,34 +12,34 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Products.First().Name)
+            @Html.DisplayNameFor(model => model.Devices.First().DeviceName)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Products.First().Description)
+            @Html.DisplayNameFor(model => model.Devices.First().Description)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Products.First().Category)
+            @Html.DisplayNameFor(model => model.Devices.First().Category)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Products.First().Price)
+            @Html.DisplayNameFor(model => model.Devices.First().Price)
         </th>
         <th style="width: 200px;">Quantity</th>
         <th></th>
     </tr>
 
-    @foreach (var item in Model.Products)
+    @foreach (var item in Model.Devices)
     {
-        var cartItem = Model.CartItems.SingleOrDefault(ci => ci.ProductId == item.Id);
-        var wishlistItem = Model.WishItems.SingleOrDefault(ci => ci.ProductId == item.Id);
+        var cartItem = Model.CartItems.SingleOrDefault(ci => ci.DeviceId == item.DeviceId);
+        var wishlistItem = Model.WishItems.SingleOrDefault(ci => ci.DeviceId == item.DeviceId);
         <tr>
             <td>
-                @Html.DisplayFor(model => item.Name)
+                @Html.DisplayFor(model => item.DeviceName)
             </td>
             <td>
                 @Html.DisplayFor(model => item.Description)
             </td>
             <td>
-                @Html.DisplayFor(model => item.Category)
+                @Html.DisplayFor(model => item.Category.CategoryName)
             </td>
             <td>
                 @Html.DisplayFor(model => item.Price)
@@ -49,13 +49,13 @@
                 {
                     using (Html.BeginForm("RemoveFromCart", "Products", FormMethod.Post, new { @class = "share-button" }))
                     {
-                        @Html.Hidden("id", item.Id)
+                        @Html.Hidden("id", item.DeviceId)
                         <button type="submit" class="btn btn-outline-danger">-</button>
                     }
                     <h5 class="share-button">@cartItem.Quantity</h5>
                     using (Html.BeginForm("AddToCart", "Products", FormMethod.Post, new { @class = "share-button" }))
                     {
-                        @Html.Hidden("id", item.Id)
+                        @Html.Hidden("id", item.DeviceId)
                         <button type="submit" class="btn btn-outline-success">+</button>
                     }
                 }
@@ -63,7 +63,7 @@
                 {
                     using (Html.BeginForm("AddToCart", "Products", FormMethod.Post, new { @class = "form-inline" }))
                     {
-                        @Html.Hidden("id", item.Id)
+                        @Html.Hidden("id", item.DeviceId)
                         <button type="submit" class="btn btn-secondary">Add to cart</button>
                     }
                 }
@@ -72,7 +72,7 @@
                 {
                     using (Html.BeginForm("RemoveFromWishlist", "Products", FormMethod.Post, new { @class = "form-inline" }))
                     {
-                        @Html.Hidden("id", item.Id)
+                        @Html.Hidden("id", item.DeviceId)
                         <button type="submit" class="nav-link">
                             <i class="fas fa-heart"></i> Remove
                         </button>
@@ -82,7 +82,7 @@
                 {
                     using (Html.BeginForm("AddToWishlist", "Products", FormMethod.Post, new { @class = "form-inline" }))
                     {
-                        @Html.Hidden("id", item.Id)
+                        @Html.Hidden("id", item.DeviceId)
                         <button type="submit" class="nav-link">
                             <i class="far fa-heart"></i> I want this
                         </button>
@@ -93,11 +93,11 @@
 
                 @if (Model.IsAdmin)
                 {
-                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "form-inline" })
+                    @Html.ActionLink("Edit", "Edit", new { id = item.DeviceId }, new { @class = "form-inline" })
                     <span>|</span>
-                    @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "form-inline" })
+                    @Html.ActionLink("Details", "Details", new { id = item.DeviceId }, new { @class = "form-inline" })
                     <span>|</span>
-                    @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "form-inline" })
+                    @Html.ActionLink("Delete", "Delete", new { id = item.DeviceId }, new { @class = "form-inline" })
                 }
             </td>
         </tr>

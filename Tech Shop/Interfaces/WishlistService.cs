@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Web;
+using Tech_Shop.DBModel.Seed;
 using Tech_Shop.Models;
 
 namespace Tech_Shop.Services
@@ -13,7 +14,8 @@ namespace Tech_Shop.Services
     {
         private readonly HttpContextBase _context;
         private bool _reqestedFromAccount = false;
-        private ApplicationDbContext db = new ApplicationDbContext();
+        private ApplicationDbContext _db = new ApplicationDbContext();
+        private DeviceContext db = new DeviceContext();
 
         public WishlistService(HttpContextBase context = null)
         {
@@ -27,7 +29,7 @@ namespace Tech_Shop.Services
                 if (isAuth)
                 {
                     string userId = _context.User.Identity.GetUserId();
-                    var data = db.WishlistData.SingleOrDefault(cd => cd.UserId == userId);
+                    var data = _db.WishlistData.SingleOrDefault(cd => cd.UserId == userId);
                     if (data != null) UnpackWishlistData(data.WishlistDataString);
                     else SetWishlistCookie();
                 }
@@ -58,18 +60,18 @@ namespace Tech_Shop.Services
             return Wishlist;
         }
 
-        public void AddToWishlist(int productId, Product product)
+        public void AddToWishlist(int deviceId, Device device)
         {
-            var WishlistItem = Wishlist.SingleOrDefault(c => c.ProductId == productId);
+            var WishlistItem = Wishlist.SingleOrDefault(c => c.DeviceId == deviceId);
             if (WishlistItem == null)
             {
-                Wishlist.Add(new WishlistItem { ProductId = productId, Product = product });
+                Wishlist.Add(new WishlistItem {DeviceId = deviceId, Device = device });
             }
             SetWishlistCookie();
         }
-        public void RemoveFromWishlist(int productId)
+        public void RemoveFromWishlist(int deviceId)
         {
-            var wishlistItem = Wishlist.SingleOrDefault(c => c.ProductId == productId);
+            var wishlistItem = Wishlist.SingleOrDefault(c => c.DeviceId == deviceId);
             if (wishlistItem != null)
             {
                Wishlist.Remove(wishlistItem);
@@ -79,7 +81,7 @@ namespace Tech_Shop.Services
 
         public string CompactWishlistData()
         {
-            return string.Join("|", Wishlist.Select(item => $"{item.ProductId}"));
+            return string.Join("|", Wishlist.Select(item => $"{item.DeviceId}"));
         }
 
         public void UnpackWishlistData(string cartData)
@@ -89,15 +91,15 @@ namespace Tech_Shop.Services
             var items = res.Split('|');
             foreach (var item in items)
             {
-                if (int.TryParse(item, out int productId))
+                if (int.TryParse(item, out int deviceId))
                 {
-                    var product = db.Products.Find(productId);
-                    if (product == null)
+                    var device = db.Devices.Find(deviceId);
+                    if (device == null)
                     {
-                        throw new Exception($"Product with ID {productId} not found");
+                        continue;
                     }
 
-                    Wishlist.Add(new WishlistItem { ProductId = productId, Product = product });
+                    Wishlist.Add(new WishlistItem { DeviceId = deviceId, Device = device });
 
                 }
             }
@@ -113,7 +115,7 @@ namespace Tech_Shop.Services
             string cookieData = CompactWishlistData();
             var cookie = new HttpCookie("WishlistCookie")
             {
-                ["Products"] = cookieData,
+                ["Wishlist"] = cookieData,
                 Expires = DateTime.MaxValue
             };
             _context.Response.Cookies.Add(cookie);
@@ -122,20 +124,20 @@ namespace Tech_Shop.Services
             {
                 string userId = _context.User.Identity.GetUserId();
 
-                var currWlData = db.WishlistData.SingleOrDefault(cd => cd.UserId == userId);
+                var currWlData = _db.WishlistData.SingleOrDefault(cd => cd.UserId == userId);
 
                 if (currWlData != null)
                 {
                     // User already has an entry, update it
                     currWlData.WishlistDataString = cookieData;
-                    db.Entry(currWlData).State = EntityState.Modified;
+                    _db.Entry(currWlData).State = EntityState.Modified;
                 }
                 else
                 {
                     // User does not have an entry, add a new entry
-                    db.WishlistData.Add(new WishlistData { UserId = userId, WishlistDataString = cookieData });
+                    _db.WishlistData.Add(new WishlistData { UserId = userId, WishlistDataString = cookieData });
                 }
-                db.SaveChanges();
+                _db.SaveChanges();
             }
         }
     }

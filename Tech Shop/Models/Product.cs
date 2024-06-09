@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Online_Tech_Shop.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -15,20 +16,10 @@ namespace Tech_Shop.Models
         public int Price { get; set; }
         public Product() { }
     }
-    public class ProductWithQuantity
-    {
-        public Product Product { get; set; }
-        public int QuantityInCart { get; set; }
-    }
 
-    public class ProductList
-    {
-        public IEnumerable<Product> Products { get; set; }
-        public Boolean IsAdmin { get; set; }
-    }
     public class ProductListWithQ
     {
-        public IEnumerable<Product> Products { get; set; }
+        public IEnumerable<Device> Devices { get; set; }
         public IEnumerable<CartItem> CartItems { get; set; }
         public IEnumerable<WishlistItem> WishItems { get; set; }
         public bool IsAdmin { get; set; }

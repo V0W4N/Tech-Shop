@@ -9,6 +9,7 @@ using System.Security.Principal;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using Tech_Shop.DBModel.Seed;
 using Tech_Shop.Models;
 using Tech_Shop.Services;
 
@@ -17,6 +18,7 @@ namespace Tech_Shop.Controllers
     public class ProductsController : Controller
     {
         private ApplicationDbContext _db = new ApplicationDbContext();
+        private DeviceContext db = new DeviceContext();
         private CartService _cartService = new CartService();
         private OrderService _orderService = new OrderService();
         private WishlistService _wishlistService = new WishlistService();
@@ -26,13 +28,13 @@ namespace Tech_Shop.Controllers
         // GET: Products
         public ActionResult Index()
         {
-            var products = _db.Products.ToList();
+            var devices = db.Devices.Include(d => d.Category).Include(d => d.AttributeValues).ToList();
             var cartItems = _cartService.GetCartItems();
             var wlItems = _wishlistService.GetWishlistItems();
 
             var list = new ProductListWithQ
             {
-                Products = products,
+                Devices = devices,
                 CartItems = cartItems,
                 WishItems = wlItems,
                 IsAdmin = IsInRoleList(roleList, User)
@@ -53,15 +55,15 @@ namespace Tech_Shop.Controllers
         [HttpPost]
         public ActionResult AddToCart(int id)
         {
-            Product product = _db.Products.Find(id);
-            if (product == null)
+            Device device = db.Devices.Find(id);
+            if (device == null)
             {
                 return HttpNotFound();
             }
-            if (product != null)
+            if (device != null)
             {
-                _cartService.AddToCart(id, product);
-                TempData["AddedProductName"] = product.Name;
+                _cartService.AddToCart(id, device);
+                TempData["AddedProductName"] = device.DeviceName;
             }
 
             return RedirectToAction("Index");
@@ -70,14 +72,14 @@ namespace Tech_Shop.Controllers
         [HttpPost]
         public ActionResult AddToWishlist(int id)
         {
-            Product product = _db.Products.Find(id);
-            if (product == null)
+            Device device = db.Devices.Find(id);
+            if (device == null)
             {
                 return HttpNotFound();
             }
-            if (product != null)
+            if (device != null)
             {
-                _wishlistService.AddToWishlist(id, product);
+                _wishlistService.AddToWishlist(id, device);
             }
 
             return RedirectToAction("Index");
@@ -105,12 +107,12 @@ namespace Tech_Shop.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Product product = _db.Products.Find(id);
-            if (product == null)
+            Device device = db.Devices.Find(id);
+            if (device == null)
             {
                 return HttpNotFound();
             }
-            return View(product);
+            return View(device);
         }
 
         // GET: Products/Create
@@ -145,12 +147,12 @@ namespace Tech_Shop.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Product product = _db.Products.Find(id);
-            if (product == null)
+            Device device = db.Devices.Find(id);
+            if (device == null)
             {
                 return HttpNotFound();
             }
-            return View(product);
+            return View(device);
         }
 
         [Authorize]
@@ -170,9 +172,9 @@ namespace Tech_Shop.Controllers
                     OrderDate = DateTime.Now,
                     OrderItems = cartItems.Select(ci => new OrderItem
                     {
-                        ProductId = ci.ProductId,
+                        DeviceId = ci.DeviceId,
                         Quantity = ci.Quantity,
-                        TotalAmount = ci.Product.Price
+                        TotalAmount = ci.Device.Price
                     }).ToList()
                 };
 
@@ -188,15 +190,15 @@ namespace Tech_Shop.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,Description,Category,ProductId")] Product product)
+        public ActionResult Edit([Bind(Include = "Id,DeviceName,Description,Category,DeviceId")] Device device)
         {
             if (ModelState.IsValid)
             {
-                _db.Entry(product).State = EntityState.Modified;
-                _db.SaveChanges();
+                db.Entry(device).State = EntityState.Modified;
+                db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(product);
+            return View(device);
         }
 
         // GET: Products/Delete/5
@@ -207,12 +209,12 @@ namespace Tech_Shop.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Product product = _db.Products.Find(id);
-            if (product == null)
+            Device device = db.Devices.Find(id);
+            if (device == null)
             {
                 return HttpNotFound();
             }
-            return View(product);
+            return View(device);
         }
 
         // POST: Products/Delete/5
@@ -221,9 +223,9 @@ namespace Tech_Shop.Controllers
         [Authorize]
         public ActionResult DeleteConfirmed(int id)
         {
-            Product product = _db.Products.Find(id);
-            _db.Products.Remove(product);
-            _db.SaveChanges();
+            Device device = db.Devices.Find(id);
+            db.Devices.Remove(device);
+            db.SaveChanges();
             return RedirectToAction("Index");
         }
 
@@ -231,7 +233,7 @@ namespace Tech_Shop.Controllers
         {
             if (disposing)
             {
-                _db.Dispose();
+                db.Dispose();
             }
             base.Dispose(disposing);
         }

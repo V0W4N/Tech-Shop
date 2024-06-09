@@ -8,8 +8,8 @@ namespace Tech_Shop.Models
 {
     public class CartItem
     {
-        public int ProductId { get; set; }
-        public Product Product { get; set; }
+        public int DeviceId { get; set; }
+        public Device Device { get; set; }
         public int Quantity { get; set; }
         public CartItem() { }
     }

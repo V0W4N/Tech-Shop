@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Tech_Shop.DBModel.Seed;
 using Tech_Shop.Models;
 using Tech_Shop.Services;
 
@@ -11,7 +12,8 @@ namespace Tech_Shop.Controllers
 {
     public class CartController : Controller
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
+        private ApplicationDbContext _db = new ApplicationDbContext();
+        private DeviceContext db = new DeviceContext();
         private CartService _cartService = new CartService();
         private OrderService _orderService = new OrderService();
 
@@ -30,22 +32,22 @@ namespace Tech_Shop.Controllers
         }
 
         [HttpPost]
-        public ActionResult UpdateCart(int productId, int quantity)
+        public ActionResult UpdateCart(int deviceId, int quantity)
         {
-            _cartService.UpdateCart(productId, quantity);
+            _cartService.UpdateCart(deviceId, quantity);
             return RedirectToAction("Index");
         }
 
         [HttpPost]
-        public ActionResult RemoveFromCart(int productId)
+        public ActionResult RemoveFromCart(int deviceId)
         {
-            _cartService.RemoveFromCart(productId);
+            _cartService.RemoveFromCart(deviceId);
             return RedirectToAction("Index");
         }
         [HttpPost]
-        public ActionResult DeleteFromCart(int productId)
+        public ActionResult DeleteFromCart(int deviceId)
         {
-            _cartService.DeleteFromCart(productId);
+            _cartService.DeleteFromCart(deviceId);
             return RedirectToAction("Index");
         }
 
@@ -64,10 +66,10 @@ namespace Tech_Shop.Controllers
                         {
                             UserId = userId,
                             OrderDate = DateTime.Now,
-                            TotalAmount = cartItems.Sum(item => item.Product.Price * item.Quantity),
+                            TotalAmount = cartItems.Sum(item => item.Device.Price * item.Quantity),
                             OrderItems = cartItems.Select(item => new OrderItem
                             {
-                                ProductId = item.ProductId,
+                                DeviceId = item.DeviceId,
                                 Quantity = item.Quantity
                             }).ToList()
                         };

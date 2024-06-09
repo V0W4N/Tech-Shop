@@ -16,75 +16,7 @@ namespace Tech_Shop.Controllers
     {
 
         DeviceContext db = new DeviceContext();
-        //public DeviceController() { }
 
-        //[HttpGet]
-        //public ActionResult Edit(int? id)
-        //{
-        //    if (id == null)             
-        //        return HttpNotFound();
-        //    Device device = db.Devices.Find(id);
-        //    if (device != null) 
-        //        return View(device);
-        //    return HttpNotFound();
-        //}
-        //[HttpPost]
-        //public ActionResult Edit(Device device)
-        //{
-        //    db.Entry(device).State = EntityState.Modified;
-        //    db.SaveChanges();
-        //    return RedirectToAction("List");
-        //}
-        //[HttpGet]
-        //public ActionResult Create() {
-        //    var devices = db.Devices.Include(d => d.Category)
-        //                    .Include(d => d.AtributeValues.Select(av => av.Attribute))
-        //                    .ToList();
-        //    return View(devices);
-        //}
-
-        //[HttpPost]
-        //public ActionResult Create(Device device)
-        //{
-        //    db.Devices.Add(device);
-        //    db.SaveChanges();
-        //    return RedirectToAction("List");
-        //}
-        //[HttpGet]
-        //public ActionResult Delete(int? id)
-        //{
-        //    Device device = db.Devices.Find(id);    
-        //    if(id == null) return HttpNotFound();
-        //    return View(device);
-        //}
-        //[HttpPost , ActionName("Delete")]
-        //public ActionResult DeleteConfirmed(int? id)
-        //{
-        //    Device device = db.Devices.Find(id);
-        //    if (id == null) return HttpNotFound();
-        //    db.Devices.Remove(device);
-        //    db.SaveChanges();
-        //    return RedirectToAction("List");
-        //}
-
-
-        //public ActionResult List(string name)
-        //{
-        //    IQueryable<Device> devices = db.Devices;
-
-        //    if (!String.IsNullOrEmpty(name) && !name.Equals("Все"))
-        //    {
-        //        devices = devices.Where(p => p.DeviceName == name);
-        //    }
-        //    List<string> devicesName = db.Devices.Select(p=> p.DeviceName).ToList();
-        //    devicesName.Insert(0, "Все");
-        //    DeviceListViewModel dlvm = new DeviceListViewModel
-        //    {
-        //        Devices = devices.ToList(),
-        //        Names = new SelectList(devicesName, "Name")
-        //    };
-        //    return View(dlvm);
-        //}
         public ActionResult Index()
         {
             var devices = db.Devices.Include(d => d.Category).Include(d => d.AttributeValues).ToList();
