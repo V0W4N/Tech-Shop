@@ -1,6 +1,6 @@
 ﻿@model Tech_Shop.Models.ProductListWithQ
 
-<h2>Index</h2>
+<h1>Список товаров</h1>
 <p>
     @if (Model.IsAdmin)
     {
@@ -12,26 +12,33 @@
 
 @using (Html.BeginForm("Index", "Products", FormMethod.Post))
 {
-    <div>
-        @Html.TextBox("searchInput", null, new { id = "searchInput", placeholder = "Enter your search query" })
-        <button type="submit">Search</button>
+    <div style="margin: 2% auto 1% 5% ">
+        <h5>Поиск</h5>
+        <div class="col">
+            <div class="input-group">
+                @Html.TextBox("searchInput", null, new { id = "searchInput", placeholder = "Enter your search query", @class = "form-control" })
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-primary" style="margin-left: 10px">Search</button>
+                </div>
+            </div>
+        </div>
     </div>
 }
 <table class="table">
     <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Devices.First().DeviceName)
+        <th style="text-align: center;">
+            Название
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Devices.First().Description)
+        <th style="text-align: center;">
+            Описание
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Devices.First().Category)
+        <th style="text-align: center;">
+            Категория
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Devices.First().Price)
+        <th style="text-align: center;">
+            Цена
         </th>
-        <th style="width: 200px;">Quantity</th>
+        <th style="width: 200px;"></th>
         <th></th>
     </tr>
 
@@ -40,16 +47,16 @@
         var cartItem = Model.CartItems.SingleOrDefault(ci => ci.DeviceId == item.DeviceId);
         var wishlistItem = Model.WishItems.SingleOrDefault(ci => ci.DeviceId == item.DeviceId);
         <tr>
-            <td>
+            <td class="centered-cell">
                 @Html.DisplayFor(model => item.DeviceName)
             </td>
-            <td>
+            <td class="centered-cell">
                 @Html.DisplayFor(model => item.Description)
             </td>
-            <td>
+            <td class="centered-cell">
                 @Html.DisplayFor(model => item.Category.CategoryName)
             </td>
-            <td>
+            <td class="centered-cell">
                 @Html.DisplayFor(model => item.Price)
             </td>
             <td>
@@ -113,6 +120,10 @@
 </table>
 
 <style>
+    .centered-cell {
+        text-align: center; /* Center horizontally */
+        vertical-align: middle; /* Center vertically */
+    }
 
     .quantity-input {
         width: 50px; /* Adjust width as needed */

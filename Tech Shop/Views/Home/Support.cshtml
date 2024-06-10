@@ -1,0 +1,44 @@
+﻿@model Tech_Shop.Models.SupportFormModel
+
+@{
+    ViewBag.Title = "Support Page";
+}
+
+<style>
+    .message-textarea {
+        width: 140%; /* Set the width to 100% */
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-md-3">
+            <h2>Support Page</h2>
+
+            @using (Html.BeginForm("SubmitSupportForm", "Support", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Email)
+                    @Html.TextBoxFor(model => model.Email, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Topic)
+                    @Html.TextBoxFor(model => model.Topic, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Topic, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Message)
+                    @Html.TextAreaFor(model => model.Message, new { @class = "form-control message-textarea", rows = 5 })
+                    @Html.ValidationMessageFor(model => model.Message, "", new { @class = "text-danger" })
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="margin-top: 10px">Submit</button>
+            }
+        </div>
+    </div>
+</div>

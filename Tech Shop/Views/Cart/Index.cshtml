@@ -6,50 +6,70 @@
 
 <h2>Your Cart</h2>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Product</th>
-            <th>Quantity</th>
-            <th>Calculated Price</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.Device.DeviceName</td>
-                <td>
-                    @using (Html.BeginForm("UpdateCart", "Cart", FormMethod.Post))
-                    {
-                        @Html.Hidden("productId", item.DeviceId)
-                        <input type="number" name="quantity" value="@item.Quantity" class="form-control" style="display: inline-block; width: auto;" />
-                        <button type="submit" class="btn btn-primary">Update</button>
-                    }
-                </td>
-                <td>
-                    @(item.Device.Price*item.Quantity)
-                </td>
-                <td>
-                    @using (Html.BeginForm("DeleteFromCart", "Cart", FormMethod.Post))
-                    {
-                        @Html.Hidden("productId", item.DeviceId)
-                        <button type="submit" class="btn btn-danger">Remove</button>
-                    }
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+                <table class="table cart-table">
+                    <thead>
+                        <tr>
+                            <th style=" width: 20%;">Product</th>
+                            <th>Quantity</th>
+                            <th style=" width: 25%;">Calculated Price</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Device.DeviceName</td>
+                                <td>
+                                    @using (Html.BeginForm("UpdateCart", "Cart", FormMethod.Post))
+                                    {
+                                        @Html.Hidden("deviceId", item.DeviceId)
+                                        <input type="number" name="quantity" value="@item.Quantity" class="form-control" style="display: inline-block; width: 40%;" />
+                                        <button type="submit" class="btn btn-primary">Set</button>
+                                    }
+                                </td>
+                                <td>
+                                    @(item.Device.Price*item.Quantity)
+                                </td>
+                                <td>
+                                    @using (Html.BeginForm("DeleteFromCart", "Cart", FormMethod.Post))
+                                    {
+                                        @Html.Hidden("deviceId", item.DeviceId)
+                                        <button type="submit" class="btn btn-danger">Remove</button>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+        </div>
+        <div class="col-md-4 offset-md-1">
+            <div class="total">
+                <div>
+                    <h4>Total</h4>
+                    <h5>
+                        @Model.Sum(i => (i.Quantity * i.Device.Price))
+                    </h5>
+                </div>
+                @using (Html.BeginForm("ConfirmPurchase", "Cart", FormMethod.Post))
+                {
+                    <button type="submit" class="btn btn-success" onclick="return confirm('Are you sure you want to confirm the purchase?');">Confirm Purchase</button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
 
-<h4>
-    Total
-</h4>
-<h5>
-    @Model.Sum(i => (i.Quantity * i.Device.Price))
-</h5>
-@using (Html.BeginForm("ConfirmPurchase", "Cart", FormMethod.Post))
-{
-    <button type="submit" class="btn btn-success" onclick="return confirm('Are you sure you want to confirm the purchase?');">Confirm Purchase</button>
-}
+<style>
+    .cart-table {
+        width: 100%;
+        vertical-align: middle;
+    }
+
+    .total {
+        margin-top: 20px; /* Adjust as needed */
+    }
+</style>

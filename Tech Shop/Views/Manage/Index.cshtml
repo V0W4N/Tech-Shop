@@ -7,28 +7,24 @@
     <h2 id="title">@ViewBag.Title</h2>
 
     <p class="text-success">@ViewBag.StatusMessage</p>
-    <div>
+    <div style="margin-bottom: 5%">
         <h4>Change your account settings</h4>
         <hr />
-        <dl class="dl-horizontal">
-            <dt>Password:</dt>
-            <dd>
-                @if (Model.HasPassword)
-                {
-                    @Html.ActionLink("Change your password", "ChangePassword", routeValues: new { }, htmlAttributes: new { @class = "btn btn-secondary" });
-                }
-                else
-                {
-                    @Html.ActionLink("Create", "SetPassword", routeValues: new { }, htmlAttributes: new { @class = "btn btn-success" })
-                }
-            </dd>
-            <dt>External Logins:</dt>
-            <dd>
-                @Model.Logins.Count
-                @Html.ActionLink("Manage", "ManageLogins")
-            </dd>
-
-        </dl>
+        @if (Model.HasPassword)
+        {
+            @Html.ActionLink("Change your password", "ChangePassword", routeValues: new { }, htmlAttributes: new { @class = "btn btn-secondary" });
+        }
+        else
+        {
+            @Html.ActionLink("Create", "SetPassword", routeValues: new { }, htmlAttributes: new { @class = "btn btn-success" })
+        }
+        @*
+        <dt>External Logins:</dt>
+        <dd>
+            @Model.Logins.Count
+            @Html.ActionLink("Manage", "ManageLogins")
+        </dd>
+        *@
     </div>
     <div>
         <h4>Manage Your Purchases</h4>

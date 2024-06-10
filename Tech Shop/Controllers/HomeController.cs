@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Tech_Shop.Models;
 
 namespace Tech_Shop.Controllers
 {
@@ -28,6 +29,12 @@ namespace Tech_Shop.Controllers
             ViewBag.Message = "Your contact page.";
 
             return View();
+        }
+        public ActionResult Support()
+        {
+            ViewBag.Message = "Create a support request";
+            SupportFormModel model = new SupportFormModel();
+            return View(model);
         }
         public ActionResult Products()
         {
