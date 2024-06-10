@@ -15,6 +15,7 @@ using Tech_Shop.Services;
 using Tech_Shop.ViewModels;
 using System.Web.WebPages;
 using System.Web.Services.Description;
+using System.Xml.Linq;
 
 namespace Tech_Shop.Controllers
 {
@@ -29,17 +30,35 @@ namespace Tech_Shop.Controllers
 
 
         // GET: Products
-        public ActionResult Index()
+        public ActionResult Index(string name)
         {
             var devices = db.Devices.Include(d => d.Category).Include(d => d.AttributeValues).ToList();
             var cartItems = _cartService.GetCartItems();
             var wlItems = _wishlistService.GetWishlistItems();
+
+
+            IQueryable<Device> deviceQ = db.Devices;
+            if (!String.IsNullOrEmpty(name) && !name.Equals("Все"))
+            {
+                deviceQ = deviceQ.Where(p => p.Category.CategoryName == name);
+            }
+            //List<DeviceCategory> devicesName = db.DeviceCategories.Where(p => p.CategoryName == name).ToList();
+
+            List<string> deviceCategories = db.DeviceCategories.Select(p => p.CategoryName).ToList();
+            deviceCategories.Insert(0, "Все");
+            DeviceListViewModel dlvm = new DeviceListViewModel
+            {
+                Devices = deviceQ.ToList(),
+                Categories = new SelectList(deviceCategories, "CategoryName")
+            };
+
 
             var list = new ProductListWithQ
             {
                 Devices = devices,
                 CartItems = cartItems,
                 WishItems = wlItems,
+                DeviceListViewModel = dlvm,
                 IsAdmin = IsInRoleList(roleList, User)
             };
 
@@ -315,7 +334,6 @@ namespace Tech_Shop.Controllers
             _cartService.RemoveFromCart(id);
             return RedirectToAction("Index");
         }
-        // Other actions...
 
         // GET: Products/Details/5
         public ActionResult Details(int? id)
@@ -342,7 +360,7 @@ namespace Tech_Shop.Controllers
 
             if (!cartItems.Any())
             {
-                return false; // No items to purchase
+                return false;
             }
 
             try
@@ -367,6 +385,8 @@ namespace Tech_Shop.Controllers
                 return false;
             }
         }
+
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

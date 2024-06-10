@@ -10,85 +10,130 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-xl d-none d-xl-block">
-            <div class="colors-wrapper mb-8">
-                <span class="d-block mb-8">Culoare</span>
-                <div class="color d-flex flex-wrap">
-                    <a href="#" title="Black">
-                        <div data-color="#000000" class="circle color_d" style="background: Black; background: #000000; border: solid 2px #fff; box-shadow: 0 0 0 2px #000000"></div>
+        <div class="col-11 col-md-3 ">
+            <div class="grid-item" data-list-index="0" data-product-index="0">
+                <div class="img-wrap w-100">
+                    <a>
+                        <img class="card-image" src="@Model.Device.DeviceImage" alt="@Model.Device.DeviceImage photo" title="@Model.Device.DeviceImage">
                     </a>
                 </div>
             </div>
-            <div class="main-description">
-                <ul class="features">
-                    <li class="char_all">
-                        DeviceName :
-                        @Html.DisplayFor(model => model.Device.DeviceName)
-                    </li>
-
-                    <li class="char_all">
-                        Description :
-                        @Html.DisplayFor(model => model.Device.Description)
-                    </li>
-
-                    <li class="char_all">
-                        Category :
-                        @Html.DisplayFor(model => model.Device.Category)
-                    </li>
-
-                    <li class="char_all">
-                        DeviceId :
-                        @Html.DisplayFor(model => model.Device.DeviceId)
-                    </li>
-                </ul>
-            </div>
         </div>
-        <div class="col-12 col-md-6 col-xl-4 col-xxl-3 d-md-flex flex-md-column">
-            <div class="bottom-wrap">
-                <div class="price-wrap h5 d-flex flex-column m-0">
-                    <span class="price-new"><b>@Model.Device.Price</b> lei</span>
-                </div>
-                <div class="icons-wrapper row">
-                    <div class="col">
-                        <a class="add_to_compare" data-id="@Model.Device.DeviceId" title="Comparație"><span class="icon-scale mr-3"></span></a>
+                <div class="col-xl d-none d-xl-block">
+                    <div class="colors-wrapper mb-8">
+                        <h5 class="d-block mb-8"><b>Основные характеристики</b></h5>
                     </div>
-                    <div class="col">
-                            @using (Html.BeginForm("AddToCart", "Products", FormMethod.Post, new { @class = "share-button" }))
-                            {
-                                @Html.Hidden("id", Model.Device.DeviceId)
-                                <button type="submit" class="btn btn-secondary">Add to cart</button>
-                            }
-                    </div>
-                    <div class="col">
-                        @if (wishlistItem != null)
-                        {
-                            using (Html.BeginForm("RemoveFromWishlist", "Products", FormMethod.Post, new { @class = "share-button" }))
-                            {
-                                @Html.Hidden("id", Model.Device.DeviceId)
-                                <button type="submit" class="btn btn-action">
-                                    <i class="fas fa-heart"></i> Remove
-                                </button>
-                            }
-                        }
-                        else
-                        {
-                            using (Html.BeginForm("AddToWishlist", "Products", FormMethod.Post, new { @class = "share-button" }))
-                            {
-                                @Html.Hidden("id", Model.Device.DeviceId)
-                                <button type="submit" class="btn btn-action">
-                                    <i class="far fa-heart"></i> I want this
-                                </button>
-                            }
-                        }
+                    <div class="main-description">
+                        <ul class="features">
+                            <li class="char_all">
+                                DeviceName :
+                                @Html.DisplayFor(model => model.Device.DeviceName)
+                            </li>
+
+                            <li class="char_all">
+                                Description :
+                                @Html.DisplayFor(model => model.Device.Description)
+                            </li>
+
+                            <li class="char_all">
+                                Category :
+                                @Html.DisplayFor(model => model.Device.Category)
+                            </li>
+
+                            <li class="char_all">
+                                DeviceId :
+                                @Html.DisplayFor(model => model.Device.DeviceId)
+                            </li>
+                        </ul>
                     </div>
                 </div>
+                <div class="col-12 col-md-6 col-xl-4 col-xxl-3 d-md-flex flex-md-column">
+                    <div class="bottom-wrap">
+                        <div class="price-wrap h5 d-flex flex-column m-0">
+                            <span class="price-new"><b>@Model.Device.Price</b> lei</span>
+                        </div>
+                        <div class="icons-wrapper row">
+                            <div class="col">
+                                <a class="add_to_compare" data-id="@Model.Device.DeviceId" title="Comparație"><span class="icon-scale mr-3"></span></a>
+                            </div>
+                            <div class="col">
+                                @using (Html.BeginForm("AddToCart", "Products", FormMethod.Post, new { @class = "share-button" }))
+                                {
+                                    @Html.Hidden("id", Model.Device.DeviceId)
+                                    <button type="submit" class="btn btn-secondary">Add to cart</button>
+                                }
+                            </div>
+                            <div class="col">
+                                @if (wishlistItem != null)
+                                {
+                                    using (Html.BeginForm("RemoveFromWishlist", "Products", FormMethod.Post, new { @class = "share-button" }))
+                                    {
+                                        @Html.Hidden("id", Model.Device.DeviceId)
+                                        <button type="submit" class="btn btn-action">
+                                            <i class="fas fa-heart"></i> Remove
+                                        </button>
+                                    }
+                                }
+                                else
+                                {
+                                    using (Html.BeginForm("AddToWishlist", "Products", FormMethod.Post, new { @class = "share-button" }))
+                                    {
+                                        @Html.Hidden("id", Model.Device.DeviceId)
+                                        <button type="submit" class="btn btn-action">
+                                            <i class="far fa-heart"></i> I want this
+                                        </button>
+                                    }
+                                }
+                            </div>
+                        </div>
 
 
+                    </div>
+                    <p>
+                        @Html.ActionLink("Edit", "Edit", new { id = Model.Device.DeviceId }) |
+                        @Html.ActionLink("Back to List", "Index")
+                    </p>
+                </div>
             </div>
-            <p>
-                @Html.ActionLink("Edit", "Edit", new { id = Model.Device.DeviceId }) |
-                @Html.ActionLink("Back to List", "Index")
-            </p>
         </div>
-    </div>
-</div>
+
+<style>
+    .centered-cell {
+        text-align: center; /* Center horizontally */
+        vertical-align: middle; /* Center vertically */
+    }
+
+    .quantity-input {
+        width: 50px; /* Adjust width as needed */
+        margin: 0 10px; /* Adjust margin as needed */
+    }
+
+    .share-button {
+        display: inline-block;
+    }
+
+    .img-wrap {
+        width: 400px;
+        height: 345px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden; /* Ensures images don't overflow */
+        border: 1px solid #e0e0e0; /* Optional: Add border for clarity */
+    }
+
+    .card-image {
+        width: 100%; /* Make the image fill its container */
+        height: auto; /* Maintain aspect ratio */
+    }
+
+    .no-image-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f8f9fa;
+        color: #6c757d; /* Optional: Add text color */
+    }
+</style>

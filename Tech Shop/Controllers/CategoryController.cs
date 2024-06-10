@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Data.Entity;
 using System.Linq;
+using System.Security.Principal;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Services.Description;
 using Tech_Shop.DBModel.Seed;
 using Tech_Shop.Models;
 using Tech_Shop.ViewModels;
@@ -23,14 +26,11 @@ namespace Tech_Shop.Controllers
             return View(model);
         }
 
-        [HttpGet]
-        public ActionResult Edit(int id)
+        public ActionResult Edit(int? id)
         {
+            if (id == null) return HttpNotFound();
             var category = db.DeviceCategories.Find(id);
-            if (category == null)
-            {
-                return HttpNotFound();
-            }
+            if (category == null) return HttpNotFound();
             CategoryViewModel model = new CategoryViewModel
             {
                 CategoryId = category.CategoryId,
@@ -40,58 +40,64 @@ namespace Tech_Shop.Controllers
             return View(model);
         }
 
-        [HttpPost]
-        public ActionResult Edit(CategoryViewModel model)
+        public ActionResult EditCategory(CategoryViewModel model)
         {
-                var category = db.DeviceCategories.Find(model.CategoryId);
-                if (category != null)
+            var category = db.DeviceCategories.Find(model.CategoryId);
+            if (category != null)
                 {
                     category.CategoryName = model.CategoryName;
+                    category.CategoryId = model.CategoryId;
 
-                    // Update existing attributes
-                    foreach (var attributeModel in model.Attributes)
-                    {
-                        var attribute = db.DeviceCategoryAttributes.Find(attributeModel.AttributeId);
-                        if (attribute != null)
-                        {
-                            attribute.AttributeName = attributeModel.AttributeName;
-                        }
-                    }
+                var existingAttributes = db.DeviceCategoryAttributes
+                 .Where(av => av.CategoryId == model.CategoryId);
 
-                    db.SaveChanges();
+                foreach (var existingValue in existingAttributes)
+                {
+                    db.DeviceCategoryAttributes.Remove(existingValue);
                 }
-            return View(model);
+                List<DeviceCategoryAttribute> attributeValues = new List<DeviceCategoryAttribute>();
+                if (model.Attributes != null)
+                {
+                    foreach (var item in model.Attributes)
+                    {
+                        attributeValues.Add(new DeviceCategoryAttribute
+                        {
+                            AttributeName = item.AttributeName,
+                            AttributeId = item.AttributeId,
+                            CategoryId = category.CategoryId
+                        });
+                    }
+                }
+                category.CategoryAttributes = attributeValues;
+                db.Entry(category).State = EntityState.Modified;
+                db.SaveChanges();
+                }
+            return View("Edit", model);
         }
 
-
+        
         [HttpPost]
         public ActionResult AddAttribute(CategoryViewModel model)
         {
-            if (ModelState.IsValid && !string.IsNullOrEmpty(model.NewAttributeName))
+            var category = db.DeviceCategories.Find(model.CategoryId);
+            if (category != null)
             {
-                var category = db.DeviceCategories.Find(model.CategoryId);
-                if (category != null)
+                var newAttr = new DeviceCategoryAttribute
                 {
-                    var newAttribute = new DeviceCategoryAttribute
-                    {
-                        AttributeName = model.NewAttributeName,
-                        CategoryId = model.CategoryId
-                    };
-                    db.DeviceCategoryAttributes.Add(newAttribute);
-                    db.SaveChanges(); // Save the new attribute to get its ID
-
-                    category.CategoryAttributes.Add(newAttribute); // Tie the attribute to the category
-                    db.SaveChanges(); // Save changes again to ensure relationship is saved
+                    AttributeName = model.NewAttributeName,
+                    CategoryId = category.CategoryId
+                };
+                if (model.Attributes == null)
+                {
+                    model.Attributes = new List<DeviceCategoryAttribute>();
                 }
-                return RedirectToAction("Edit", new { id = model.CategoryId });
+
+                model.Attributes.Add(newAttr);
+                category.CategoryAttributes.Add(newAttr);
+                db.Entry(category).State = EntityState.Modified;
+                db.SaveChanges();
             }
-            // Log or inspect ModelState to see validation errors
-            var errors = ModelState.Values.SelectMany(v => v.Errors);
-            foreach (var error in errors)
-            {
-                System.Diagnostics.Debug.WriteLine(error.ErrorMessage);
-            }
-            return RedirectToAction("Edit", new { id = model.CategoryId });
+            return View("Edit", model);
         }
 
         [HttpPost]

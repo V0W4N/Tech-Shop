@@ -10,6 +10,6 @@ namespace Tech_Shop.Models
     public class DeviceListViewModel
     {
         public IEnumerable<Device> Devices { get; set; }
-        public SelectList Names { get; set; }
+        public SelectList Categories { get; set; }
     }
 }

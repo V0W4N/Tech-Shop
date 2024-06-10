@@ -22,6 +22,7 @@ namespace Tech_Shop.Models
         public IEnumerable<Device> Devices { get; set; }
         public IEnumerable<CartItem> CartItems { get; set; }
         public IEnumerable<WishlistItem> WishItems { get; set; }
+        public DeviceListViewModel DeviceListViewModel { get; set; }
         public bool IsAdmin { get; set; }
         public ProductListWithQ() { }
     }

@@ -1,33 +1,156 @@
-﻿@{
-    ViewBag.Title = "Home Page";
+﻿@model Tech_Shop.Models.ProductListWithQ
+
+<h1 style="margin-top:4%">Каталог</h1>
+@{
+    ViewBag.Title = "Device List";
+    var randomDevices = Model.DeviceListViewModel.Devices.OrderBy(x => Guid.NewGuid()).Take(3).ToList();
 }
 
-<main>
-    <section class="row" aria-labelledby="aspnetTitle">
-        <h1 id="title">ASP.NET</h1>
-        <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-        <p><a href="https://asp.net" class="btn btn-primary btn-md">Learn more &raquo;</a></p>
-    </section>
+@*
+    <form method="get">
+        <div class="form-inline">
+            <label class="control-label">Категория:</label>
+            @Html.DropDownList("name", Model.DeviceListViewModel.Categories as SelectList,
+                        htmlAttributes: new { @class = "form-control" })
 
-    <div class="row">
-        <section class="col-md-4" aria-labelledby="gettingStartedTitle">
-            <h2 id="gettingStartedTitle">Getting started</h2>
-            <p>
-                ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-                enables a clean separation of concerns and gives you full control over markup
-                for enjoyable, agile development.
-            </p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-        </section>
-        <section class="col-md-4" aria-labelledby="librariesTitle">
-            <h2 id="librariesTitle">Get more libraries</h2>
-            <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-        </section>
-        <section class="col-md-4" aria-labelledby="hostingTitle">
-            <h2 id="hostingTitle">Web Hosting</h2>
-            <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-        </section>
-    </div>
-</main>
+            <input type="submit" value="Фильтр" class="btn btn-default" />
+        </div>
+    </form>
+*@
+<section class="products row">
+    @foreach (var item in randomDevices)
+    {
+        var cartItem = Model.CartItems.SingleOrDefault(ci => ci.DeviceId == item.DeviceId);
+        var wishlistItem = Model.WishItems.SingleOrDefault(ci => ci.DeviceId == item.DeviceId);
+
+        <div class="col-6 col-md-5 col-lg-3 night-mode" style="margin: 4% auto auto auto ">
+            <figure class="card card-product border-0">
+                <div class="labels-wrapper">
+                </div>
+                <div class="grid-item" data-list-index="0" data-product-index="0">
+                    <div class="img-wrap w-100">
+                        @if (!string.IsNullOrEmpty(item.DeviceImage))
+                        {
+                            <a href="@Url.Action("Details", "Products", new { id = item.DeviceId })" title="@item.DeviceName" class="ga-item">
+                                <img class="card-image" src="@item.DeviceImage" alt="@item.DeviceName photo" title="@item.DeviceName">
+                            </a>
+                        }
+                        else
+                        {
+                            <div class="no-image-placeholder ga-item">
+                                No Image Available
+                            </div>
+                        }
+                    </div>
+                    <figcaption class="info-wrap" data-brand="@item.Category.CategoryName" data-categ="@item.Category.CategoryName" data-prods="@item.DeviceName">
+                        <div class="title">
+                            <a class="d-block mb-2 nav-link" style="font-size: 19px; color: black" href="@Url.Action("Details", "Products", new { id = item.DeviceId })" title="@item.DeviceName">
+                                @item.DeviceName
+                            </a>
+                        </div>
+                        <p>@item.Description</p>
+                    </figcaption>
+                </div>
+                <div class="bottom-wrap">
+                    <div class="price-wrap h5 d-flex flex-column m-0">
+                        <span class="price-new" style="margin-bottom: 3%"><b>@item.Price</b> lei</span>
+                    </div>
+                    <div class="icons-wrapper">
+                        <a class="add_to_compare" data-id="@item.DeviceId" title="Comparație"><span class="icon-scale mr-3"></span></a>
+                        @if (cartItem != null)
+                        {
+                            using (Html.BeginForm("RemoveFromCart", "Products", FormMethod.Post, new { @class = "share-button" }))
+                            {
+                                @Html.Hidden("id", item.DeviceId)
+                                <button type="submit" class="btn btn-outline-danger">-</button>
+                            }
+                            <h5 class="share-button">@cartItem.Quantity</h5>
+                            using (Html.BeginForm("AddToCart", "Products", FormMethod.Post, new { @class = "share-button" }))
+                            {
+                                @Html.Hidden("id", item.DeviceId)
+                                <button type="submit" class="btn btn-outline-success">+</button>
+                            }
+                        }
+                        else
+                        {
+                            using (Html.BeginForm("AddToCart", "Products", FormMethod.Post, new { @class = "share-button" }))
+                            {
+                                @Html.Hidden("id", item.DeviceId)
+                                <button type="submit" class="btn btn-secondary">Add to cart</button>
+                            }
+                        }
+                        @if (wishlistItem != null)
+                        {
+                            using (Html.BeginForm("RemoveFromWishlist", "Products", FormMethod.Post, new { @class = "share-button" }))
+                            {
+                                @Html.Hidden("id", item.DeviceId)
+                                <button type="submit" class="btn btn-action">
+                                    <i class="fas fa-heart"></i> Remove
+                                </button>
+                            }
+                        }
+                        else
+                        {
+                            using (Html.BeginForm("AddToWishlist", "Products", FormMethod.Post, new { @class = "share-button" }))
+                            {
+                                @Html.Hidden("id", item.DeviceId)
+                                <button type="submit" class="btn btn-action">
+                                    <i class="far fa-heart"></i> I want this
+                                </button>
+                            }
+                        }
+                    </div>
+                </div>
+                <div>
+                    @if (Model.IsAdmin)
+                    {
+                        @Html.ActionLink("Edit", "Edit", new { id = item.DeviceId }, new { @class = "form-inline" })
+                        @Html.ActionLink("Details", "Details", new { id = item.DeviceId }, new { @class = "form-inline" })
+                        @Html.ActionLink("Delete", "Delete", new { id = item.DeviceId }, new { @class = "form-inline" })
+                    }
+                </div>
+            </figure>
+        </div>
+    }
+</section>
+
+<style>
+    .centered-cell {
+        text-align: center; /* Center horizontally */
+        vertical-align: middle; /* Center vertically */
+    }
+
+    .quantity-input {
+        width: 50px; /* Adjust width as needed */
+        margin: 0 10px; /* Adjust margin as needed */
+    }
+
+    .share-button {
+        display: inline-block;
+    }
+
+    .img-wrap {
+        width: 400px;
+        height: 345px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden; /* Ensures images don't overflow */
+        border: 1px solid #e0e0e0; /* Optional: Add border for clarity */
+    }
+
+    .card-image {
+        width: 100%; /* Make the image fill its container */
+        height: auto; /* Maintain aspect ratio */
+    }
+
+    .no-image-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f8f9fa;
+        color: #6c757d; /* Optional: Add text color */
+    }
+</style>

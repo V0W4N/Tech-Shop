@@ -11,12 +11,23 @@
 </p>
 
 
+
+<form method="get">
+    <div class="form-inline">
+        <label class="control-label">Категория:</label>
+        @Html.DropDownList("name", Model.DeviceListViewModel.Categories as SelectList,
+                    htmlAttributes: new { @class = "form-control" })
+
+        <input type="submit" value="Фильтр" class="btn btn-default" />
+    </div>
+</form>
 <section class="products row">
-    @foreach (var item in Model.Devices)
+    @foreach (var item in Model.DeviceListViewModel.Devices)
     {
         var cartItem = Model.CartItems.SingleOrDefault(ci => ci.DeviceId == item.DeviceId);
         var wishlistItem = Model.WishItems.SingleOrDefault(ci => ci.DeviceId == item.DeviceId);
 
+        
         <div class="col-6 col-md-5 col-lg-3 night-mode" style="margin: 4% auto auto auto ">
             <figure class="card card-product border-0">
                 <div class="labels-wrapper">

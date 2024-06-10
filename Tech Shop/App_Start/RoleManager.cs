@@ -23,6 +23,7 @@ namespace Tech_Shop.App_Start
         };
 
 
+        public RoleManager() { }
         public static List<SelectListItem> GetRoleListForUser(IPrincipal User)
         {
             List<SelectListItem> list = new List<SelectListItem> { };

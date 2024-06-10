@@ -6,8 +6,10 @@
 
 <h2>Edit Category</h2>
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("EditCategory", "Category", FormMethod.Post))
 {
+    @Html.HiddenFor(model => Model.CategoryId);
+    @Html.HiddenFor(model => Model.CategoryName);
     @Html.AntiForgeryToken()
 
     <hr />
@@ -24,8 +26,10 @@
 
         <div class="form-group" style="margin-top: 10px">
             <h5>Category Attributes</h5>
-            @for (int i = 0; i < Model.Attributes.Count; i++)
+            @if (Model.Attributes != null)
             {
+                for (int i = 0; i < Model.Attributes.Count; i++)
+                {
                 <div class="col-md-10" data-attribute-id="@Model.Attributes[i].AttributeId">
                     <div class="input-group">
                         @Html.HiddenFor(model => Model.Attributes[i].AttributeId)
@@ -39,6 +43,7 @@
                     </div>
                     @Html.ValidationMessageFor(model => Model.Attributes[i].AttributeName, "", new { @class = "text-danger" })
                 </div>
+                }
             }
         </div>
 
@@ -52,18 +57,28 @@
 <div class="offset-md-1" style=" margin-top: 1%">
     @using (Html.BeginForm("AddAttribute", "Category", FormMethod.Post))
     {
+        @Html.HiddenFor(model => Model.CategoryId);
+        @Html.HiddenFor(model => Model.CategoryName);
+
         @Html.AntiForgeryToken()
-        @Html.HiddenFor(model => model.CategoryId)
-        <div class="form-group">
-            @Html.LabelFor(model => model.NewAttributeName, "New Attribute Name")
-            @Html.TextBoxFor(model => model.NewAttributeName, new { @class = "form-control" })
-            @Html.ValidationMessageFor(model => model.NewAttributeName, "", new { @class = "text-danger" })
-        </div>
-        <button type="submit" class="btn btn-primary" style="margin-top:0.5%; margin-left:1%">Add Attribute</button>
-    }
-</div>
+        if (Model.Attributes != null)
+        {
+            for (int i = 0; i < Model.Attributes.Count; i++)
+            {
+                @Html.HiddenFor(model => model.Attributes[i].AttributeId)
+                @Html.HiddenFor(model => model.Attributes[i].AttributeName)
+            }
+        }
+            <div class="form-group">
+                @Html.LabelFor(model => model.NewAttributeName, "New Attribute Name")
+                @Html.TextBoxFor(model => model.NewAttributeName, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.NewAttributeName, "", new { @class = "text-danger" })
+            </div>
+            <button type="submit" class="btn btn-primary" style="margin-top:0.5%; margin-left:1%">Add Attribute</button>
+        }
+    </div>
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Back to List", "List")
 </div>
 
 @section Scripts {
@@ -84,6 +99,7 @@
 
                 }).done(function () {
                     $attributeToRemove.remove();
+                    
                     // Remove the attribute from the UI after the removal is successful
                 });
             });
