@@ -10,67 +10,68 @@
 {
     @Html.AntiForgeryToken()
 
-    <div class="form-horizontal">
-        <h4>Device</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            Название устройства
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.DeviceName, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.DeviceName, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            Производитель
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Manufacturer, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Manufacturer, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            Описание
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            Цена
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Price, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Price, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-           <p>  Категория: @Model.CategoryName</p>
-            
-        </div>
-        @for (int i = 0; i < Model.Attributes.Count; i++)
-        {
-            var attrValue = Model.Attributes[i].AttributeValue;
-            <div class="form-group">
-                @Html.ValueFor(model => Model.Attributes[i].AttributeName)
-                <div class="col-md-10">
-                    @Html.HiddenFor(model => Model.Attributes[i].AttributeValue.ValueId)
-                    @Html.HiddenFor(model => Model.Attributes[i].AttributeValue.DeviceId)
-                    @Html.HiddenFor(model => Model.Attributes[i].AttributeValue.AttributeId)
-                    @Html.HiddenFor(model => Model.Attributes[i].AttributeValue.Attribute)
-                    @Html.EditorFor(model => Model.Attributes[i].AttributeValue.Value, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => Model.Attributes[i].AttributeValue, "", new { @class = "text-danger" })
-                </div>
-            </div>
-        }
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-primary" style="margin-top: 10px; margin-left: 20px" />
-            </div>
+<div class="form-horizontal">
+    <h4>Device</h4>
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-group">
+        Название устройства
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.DeviceName, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.DeviceName, "", new { @class = "text-danger" })
         </div>
     </div>
+
+    <div class="form-group">
+        Производитель
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Manufacturer, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Manufacturer, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        Описание
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        Цена
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Price, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Price, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    @Html.HiddenFor(model => Model.CategoryId)
+    <div class="form-group">
+        <p>  Категория: @Model.CategoryName</p>
+
+    </div>
+    @for (int i = 0; i < Model.Attributes.Count; i++)
+    {
+        var attrValue = Model.Attributes[i].AttributeValue;
+        <div class="form-group">
+            @Html.ValueFor(model => Model.Attributes[i].AttributeName)
+            <div class="col-md-10">
+                @Html.HiddenFor(model => Model.Attributes[i].AttributeValue.ValueId)
+                @Html.HiddenFor(model => Model.Attributes[i].AttributeValue.DeviceId)
+                @Html.HiddenFor(model => Model.Attributes[i].AttributeValue.AttributeId)
+                @Html.HiddenFor(model => Model.Attributes[i].AttributeValue.Attribute)
+                @Html.EditorFor(model => Model.Attributes[i].AttributeValue.Value, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => Model.Attributes[i].AttributeValue, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    }
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Create" class="btn btn-primary" style="margin-top: 10px; margin-left: 20px" />
+        </div>
+    </div>
+</div>
 }
 
 <div>

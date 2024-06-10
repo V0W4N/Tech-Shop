@@ -124,8 +124,6 @@ namespace Tech_Shop.Controllers
         public ActionResult CreateWithCategory(DeviceEditViewModel deviceViewModel)
         {
             
-            if (ModelState.IsValid)
-            {
                 List<DeviceCategoryAttributeValue> attributeValues = new List<DeviceCategoryAttributeValue>();
                 foreach(var item in db.DeviceCategoryAttributes
                                     .Where(a => a.CategoryId == deviceViewModel.CategoryId)
@@ -135,7 +133,7 @@ namespace Tech_Shop.Controllers
                     attributeValues.Add(new DeviceCategoryAttributeValue
                     {
                         AttributeId = item.AttributeId,
-                        Value = item.AttributeValues.ToString()
+                        Value = item.AttributeValues.FirstOrDefault(x => x.AttributeId == item.AttributeId)?.Value,
                     });
                 }
                 Device device = new Device
@@ -151,11 +149,7 @@ namespace Tech_Shop.Controllers
 
                 db.Devices.Add(device);
                 db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-
-           
-            return View("Create");
+                return RedirectToAction("");
         }
 
 
@@ -219,10 +213,10 @@ namespace Tech_Shop.Controllers
                 device.Price = model.Price;
                 device.CategoryId = model.CategoryId;
                 device.DeviceImage = model.DeviceImage;
-            if (model.Attributes != null)
-            {
-                device.AttributeValues = model.Attributes.Select(attr => attr.AttributeValue).ToList();
-            }
+                if (model.Attributes != null)
+                {
+                    device.AttributeValues = model.Attributes.Select(attr => attr.AttributeValue).ToList();
+                }
                 db.SaveChanges();
                 return RedirectToAction("Index");
         }
