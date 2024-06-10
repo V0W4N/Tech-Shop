@@ -1,7 +1,56 @@
-﻿
-@{
-    ViewBag.Title = "Category";
+﻿@model Tech_Shop.ViewModels.DeviceCategoryView
+
+<h2>Choose category to edit</h2>
+
+
+<table class="table">
+    <tr>
+        <th>
+            Id
+        </th>
+        <th>
+            Name
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model.DeviceCategories)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(model => item.CategoryId)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.CategoryName)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.CategoryId }, new { @class = "form-inline" })
+                @*<span>|</span>
+                    @Html.ActionLink("Details", "Details", new { id = item.DeviceId }, new { @class = "form-inline" })
+                    <span>|</span>
+                    @Html.ActionLink("Delete", "Delete", new { id = item.DeviceId }, new { @class = "form-inline" })
+                    }*@
+            </td>
+        </tr>
+    }
+</table>
+@using (Html.BeginForm("AddCategory", "Category", FormMethod.Post))
+{
+    <div class="form-group">
+        @Html.LabelFor(model => model.NewCategoryName, "New Category Name")
+        @Html.TextBoxFor(model => model.NewCategoryName, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.NewCategoryName, "", new { @class = "text-danger" })
+    </div>
+    <button type="submit" class="btn btn-primary">Add Category</button>
 }
+<style>
 
-<h2>Category</h2>
+    .quantity-input {
+        width: 50px; /* Adjust width as needed */
+        margin: 0 10px; /* Adjust margin as needed */
+    }
 
+    .share-button {
+        display: inline-block;
+    }
+</style>

@@ -1,10 +1,11 @@
-﻿using Online_Tech_Shop.Models;
+﻿using Tech_Shop.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Http.Tracing;
 using System.Web.Mvc;
+using Tech_Shop.Models;
 
 namespace Tech_Shop.ViewModels
 {
@@ -18,8 +19,8 @@ namespace Tech_Shop.ViewModels
         public decimal Price { get; set; }
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }
+        public Device Device { get; set; }
         public SelectList selectListItem { get; set; }
         public List<AttributeViewModel> Attributes { get; set; }
-        public List<DeviceCategoryAttributeValue> AttributeValues { get; set; }
     }
 }

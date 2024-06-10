@@ -1,4 +1,4 @@
-﻿using Online_Tech_Shop.Models;
+﻿using Tech_Shop.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -26,9 +26,9 @@ namespace Tech_Shop.Models
             db.SaveChanges();
 
             // Создание атрибутов
-            var attribute1 = new DeviceCategoryAttribute { AttributeName = "Мощность" };
-            var attribute2 = new DeviceCategoryAttribute { AttributeName = "Скорость" };
-            var attribute3 = new DeviceCategoryAttribute { AttributeName = "Размер" };
+            var attribute1 = new DeviceCategoryAttribute { AttributeName = "Мощность", CategoryId = 1 };
+            var attribute2 = new DeviceCategoryAttribute { AttributeName = "Скорость", CategoryId = 2 };
+            var attribute3 = new DeviceCategoryAttribute { AttributeName = "Размер", CategoryId = 3 };
 
             // Добавление атрибутов
             db.DeviceCategoryAttributes.Add(attribute1);

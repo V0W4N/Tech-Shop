@@ -1,0 +1,91 @@
+﻿@model Tech_Shop.Models.CategoryViewModel
+
+@{
+    ViewBag.Title = "Edit Category";
+}
+
+<h2>Edit Category</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Category</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CategoryName, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.CategoryName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.CategoryName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 10px">
+            <h5>Category Attributes</h5>
+            @for (int i = 0; i < Model.Attributes.Count; i++)
+            {
+                <div class="col-md-10"  data-attribute-id="@Model.Attributes[i].AttributeId">
+                    @Html.HiddenFor(model => Model.Attributes[i].AttributeId)
+                    @Html.EditorFor(model => Model.Attributes[i].AttributeName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => Model.Attributes[i].AttributeName, "", new { @class = "text-danger" })
+
+                    <!-- Remove attribute button -->
+                    <button type="button" class="btn btn-link remove-attribute"  data-attribute-id="@Model.Attributes[i].AttributeId">
+                        <i class="fa fa-times text-danger"></i>
+                    </button>
+                </div>
+            }
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+}
+
+@using (Html.BeginForm("AddAttribute", "Category", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.CategoryId)
+    <div class="form-group">
+        @Html.LabelFor(model => model.NewAttributeName, "New Attribute Name")
+        @Html.TextBoxFor(model => model.NewAttributeName, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.NewAttributeName, "", new { @class = "text-danger" })
+    </div>
+    <button type="submit" class="btn btn-primary">Add Attribute</button>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+
+    <script>
+        $(function () {
+            $('.remove-attribute').click(function () {
+                var attributeId = $(this).data('attribute-id');
+                console.log(attributeId);
+                var categoryId = $('#CategoryId').val(); // Assuming CategoryId is present in the form
+                var $attributeToRemove = $('[data-attribute-id="' + attributeId + '"]');
+                console.log($attributeToRemove);
+                
+                $.post('@Url.Action("RemoveAttribute", "Category")', { AttributeId: attributeId, CategoryId: categoryId }, function (data) {
+                    // Handle the response if needed
+                    
+                }).done(function () {
+                    $attributeToRemove.remove();
+                    // Remove the attribute from the UI after the removal is successful
+                });
+            });
+        });
+    </script>
+}
+

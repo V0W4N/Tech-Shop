@@ -1,4 +1,4 @@
-﻿using Online_Tech_Shop.Models;
+﻿using Tech_Shop.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,21 +7,6 @@ using System.Web.Mvc;
 
 namespace Tech_Shop.ViewModels
 {
-    /*
-     var device = new Device
-                {
-                    DeviceName = deviceViewModel.DeviceName,
-                    Manufacturer = deviceViewModel.Manufacturer,
-                    Description = deviceViewModel.Description,
-                    Price = deviceViewModel.Price,
-                    CategoryId = deviceViewModel.CategoryId,
-                    AttributeValues = deviceViewModel.AttributeValues.Select(a => new DeviceCategoryAttributeValue
-                    {
-                        AttributeId = a.AttributeId,
-                        Value = a.Value
-                    }).ToList()
-                };
-    */
     public class DeviceCreateViewModel
     {
 

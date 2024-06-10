@@ -1,4 +1,4 @@
-﻿using Online_Tech_Shop.Models;
+﻿using Tech_Shop.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

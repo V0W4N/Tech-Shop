@@ -34,7 +34,10 @@ namespace Tech_Shop.Services
                     else SetCartCookie();
                     }
                 else {
-                    UnpackCartData(_context.Request.Cookies["CartCookie"].Value);
+                    var cookie = _context.Request.Cookies["CartCookie"];
+                    if (cookie != null) {
+                        UnpackCartData(cookie.Value);
+                    }
                 }
             } 
         }

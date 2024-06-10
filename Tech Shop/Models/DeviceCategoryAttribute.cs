@@ -6,7 +6,7 @@ using System.Linq;
 using System.Web;
 using Tech_Shop.Models;
 
-namespace Online_Tech_Shop.Models
+namespace Tech_Shop.Models
 {
     public class DeviceCategoryAttribute
     {

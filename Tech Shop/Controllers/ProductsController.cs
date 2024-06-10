@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNet.Identity;
-using Online_Tech_Shop.Models;
+using Tech_Shop.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -14,6 +14,7 @@ using Tech_Shop.DBModel.Seed;
 using Tech_Shop.Models;
 using Tech_Shop.Services;
 using Tech_Shop.ViewModels;
+using System.Web.WebPages;
 
 namespace Tech_Shop.Controllers
 {
@@ -83,7 +84,7 @@ namespace Tech_Shop.Controllers
                     attributeValues.Add(new DeviceCategoryAttributeValue
                     {
                         AttributeId = item.AttributeId,
-                        Value = item.AttributeValue
+                        Value = item.AttributeValue.Value
 
                     });
                 }
@@ -118,17 +119,21 @@ namespace Tech_Shop.Controllers
             if (id == null) return HttpNotFound();
             var device = db.Devices.Find(id);
             if (device == null) return HttpNotFound();
-            List<AttributeViewModel> attributes = new List<AttributeViewModel>();
-            foreach (var attribute in device.AttributeValues)
+            List<AttributeViewModel> attributesModel = new List<AttributeViewModel>();
+            var attributes = db.DeviceCategoryAttributes
+                .Where(attr => attr.CategoryId == device.CategoryId)
+                .ToList();
+            foreach (var attribute in attributes)
             {
-                attributes.Add(new AttributeViewModel()
+                DeviceCategoryAttributeValue val = new DeviceCategoryAttributeValue { Attribute = attribute, AttributeId = attribute.AttributeId};
+                var attributeValue = device.AttributeValues.FirstOrDefault(a => a.AttributeId == attribute.AttributeId);
+                if (attributeValue != null) val = attributeValue;
+                attributesModel.Add(new AttributeViewModel()
                 {
                     AttributeId = attribute.AttributeId,
-                    AttributeName = attribute.Attribute.AttributeName,
-                    AttributeValue = attribute.Value
+                    AttributeName = attribute.AttributeName,
+                    AttributeValue = val
                 });
-
-
             }
             var model = new DeviceEditViewModel
             {
@@ -137,10 +142,10 @@ namespace Tech_Shop.Controllers
                 Manufacturer = device.Manufacturer,
                 Description = device.Description,
                 Price = device.Price,
+                Device = device,
                 CategoryId = device.CategoryId,
                 CategoryName = device.Category.CategoryName,
-                Attributes = attributes,
-                AttributeValues = device.AttributeValues.ToList()
+                Attributes = attributesModel,
             };
             ViewBag.Categories = new SelectList(db.DeviceCategories, "CategoryId", "CategoryName", model.CategoryId);
             var categories = db.DeviceCategories.ToList();
@@ -156,10 +161,8 @@ namespace Tech_Shop.Controllers
         // POST: Devices/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(DeviceViewModel model)
+        public ActionResult Edit(DeviceEditViewModel model)
         {
-            if (ModelState.IsValid)
-            {
                 var device = db.Devices.Find(model.DeviceId);
                 if (device == null) return HttpNotFound();
                 device.DeviceName = model.DeviceName;
@@ -167,11 +170,9 @@ namespace Tech_Shop.Controllers
                 device.Description = model.Description;
                 device.Price = model.Price;
                 device.CategoryId = model.CategoryId;
+                device.AttributeValues = model.Attributes.Select(attr =>  attr.AttributeValue).ToList();
                 db.SaveChanges();
                 return RedirectToAction("Index");
-            }
-            ViewBag.Categories = new SelectList(db.DeviceCategories, "CategoryId", "CategoryName", model.CategoryId);
-            return View(model);
         }
 
         // GET: Devices/Delete/5

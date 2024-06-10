@@ -5,10 +5,18 @@
     @if (Model.IsAdmin)
     {
         @Html.ActionLink("Create New", "Create")
+        <span>|</span>
+        @Html.ActionLink("Configure Categories", "List", "Category")
     }
 </p>
 
-
+@using (Html.BeginForm("Index", "Products", FormMethod.Post))
+{
+    <div>
+        @Html.TextBox("searchInput", null, new { id = "searchInput", placeholder = "Enter your search query" })
+        <button type="submit">Search</button>
+    </div>
+}
 <table class="table">
     <tr>
         <th>
@@ -88,7 +96,7 @@
                         </button>
                     }
                 }
-                </td>
+            </td>
             <td>
 
                 @if (Model.IsAdmin)
