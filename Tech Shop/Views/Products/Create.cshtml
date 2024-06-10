@@ -5,7 +5,7 @@
 }
 
 <h2 style="margin-top: 2%">Create Device</h2>
-@using (Html.BeginForm("CreateWithCategory", "Products", FormMethod.Post, new { @class = "share-button" }))
+@using (Html.BeginForm("Create", "Products", FormMethod.Post, new { @class = "share-button" }))
 {
     @Html.AntiForgeryToken()
 

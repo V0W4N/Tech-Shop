@@ -11,10 +11,10 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using Tech_Shop.DBModel.Seed;
-using Tech_Shop.Models;
 using Tech_Shop.Services;
 using Tech_Shop.ViewModels;
 using System.Web.WebPages;
+using System.Web.Services.Description;
 
 namespace Tech_Shop.Controllers
 {
@@ -59,30 +59,71 @@ namespace Tech_Shop.Controllers
 
             DeviceCategoryView dcv = new DeviceCategoryView { };
             return View(dcv);
-        }
-
-        [HttpPost]
-        public ActionResult Create(DeviceCategoryView model)
-        {
             
-            return RedirectToAction("CreateWithCategory", model.CategoryId);
         }
-
         [HttpPost]
-        public ActionResult CreateWithCategory(int id)
+        public ActionResult Create(DeviceCategoryView dcv)
         {
-
+            if (ModelState.IsValid)
+            {
+                return RedirectToAction("CreateWithCategory", new { id = dcv.CategoryId });
+            }
             return View("Index");
         }
+
+        [HttpGet]
+        public ActionResult CreateWithCategory(int? id)
+        {
+
+            if (id == null) return HttpNotFound();
+    
+            var device = new DeviceEditViewModel();
+            var attributes = db.DeviceCategoryAttributes
+                .Where(attr => attr.CategoryId == id)
+                .ToList();
+            List<AttributeViewModel> attributesModel = new List<AttributeViewModel>();
+            foreach (var attribute in attributes)
+            {
+
+                DeviceCategoryAttributeValue val = new DeviceCategoryAttributeValue { Attribute = attribute, AttributeId = attribute.AttributeId };
+                
+                 attributesModel.Add(new AttributeViewModel()
+                {
+                    AttributeId = attribute.AttributeId,
+                    AttributeName = attribute.AttributeName,
+                    AttributeValue = val
+                });
+            }
+            var model = new DeviceEditViewModel
+            {
+                DeviceId = device.DeviceId,
+                DeviceName = device.DeviceName,
+                Manufacturer = device.Manufacturer,
+                Description = device.Description,
+                Price = device.Price,
+                Device = device.Device,
+                CategoryId = db.DeviceCategories.Find(id).CategoryId,
+                CategoryName = db.DeviceCategories.Find(id).CategoryName,
+                DeviceImage = device.DeviceImage,
+                Attributes = attributesModel,
+            };
+            
+
+    
+
+            return View(model);
+        }
+
+     
 
 
 
         // POST: Device/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CreateWithCategory(DeviceCreateViewModel deviceViewModel)
+        public ActionResult CreateWithCategory(DeviceEditViewModel deviceViewModel)
         {
-
+            
             if (ModelState.IsValid)
             {
                 List<DeviceCategoryAttributeValue> attributeValues = new List<DeviceCategoryAttributeValue>();
@@ -94,7 +135,7 @@ namespace Tech_Shop.Controllers
                     attributeValues.Add(new DeviceCategoryAttributeValue
                     {
                         AttributeId = item.AttributeId,
-                        Value = item.AttributeValue.Value
+                        Value = item.AttributeValues.ToString()
                     });
                 }
                 Device device = new Device
@@ -113,13 +154,8 @@ namespace Tech_Shop.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.CategoryId = new SelectList(db.DeviceCategories, "CategoryId", "CategoryName", deviceViewModel.CategoryId);
-            ViewBag.Attributes = db.DeviceCategoryAttributes.Select(a => new AttributeViewModel
-            {
-                AttributeId = a.AttributeId,
-                AttributeName = a.AttributeName
-            }).ToList();
-            return View(deviceViewModel);
+           
+            return View("Create");
         }
 
 
