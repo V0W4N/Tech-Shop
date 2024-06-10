@@ -125,15 +125,13 @@ namespace Tech_Shop.Controllers
         {
             
                 List<DeviceCategoryAttributeValue> attributeValues = new List<DeviceCategoryAttributeValue>();
-                foreach(var item in db.DeviceCategoryAttributes
-                                    .Where(a => a.CategoryId == deviceViewModel.CategoryId)
-                                        .ToList())
+                foreach(var item in deviceViewModel.Attributes)
                 {
 
                     attributeValues.Add(new DeviceCategoryAttributeValue
                     {
-                        AttributeId = item.AttributeId,
-                        Value = item.AttributeValues.FirstOrDefault(x => x.AttributeId == item.AttributeId)?.Value,
+                        AttributeId = item.AttributeValue.AttributeId,
+                        Value = item.AttributeValue.Value,
                     });
                 }
                 Device device = new Device
@@ -204,19 +202,37 @@ namespace Tech_Shop.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(DeviceEditViewModel model)
         {
-            
-                var device = db.Devices.Find(model.DeviceId);
+            var device = db.Devices.Find(model.DeviceId);
                 if (device == null) return HttpNotFound();
+            var existingAttributeValues = db.DeviceCategoryAttributeValues
+                                 .Where(av => av.DeviceId == model.DeviceId)
+                                 .ToList();
+
+            foreach (var existingValue in existingAttributeValues)
+            {
+                db.DeviceCategoryAttributeValues.Remove(existingValue);
+            }
+            List<DeviceCategoryAttributeValue> attributeValues = new List<DeviceCategoryAttributeValue>();
+            foreach (var item in model.Attributes)
+            {
+                attributeValues.Add(new DeviceCategoryAttributeValue
+                {
+                    DeviceId = model.DeviceId,
+                    AttributeId = item.AttributeValue.AttributeId,
+                    Value = item.AttributeValue.Value,
+                });
+            }
+
                 device.DeviceName = model.DeviceName;
                 device.Manufacturer = model.Manufacturer;
                 device.Description = model.Description;
                 device.Price = model.Price;
                 device.CategoryId = model.CategoryId;
                 device.DeviceImage = model.DeviceImage;
-                if (model.Attributes != null)
-                {
-                    device.AttributeValues = model.Attributes.Select(attr => attr.AttributeValue).ToList();
-                }
+                device.AttributeValues = attributeValues;
+                db.Entry(device).State = EntityState.Modified;
+                  
+
                 db.SaveChanges();
                 return RedirectToAction("Index");
         }
