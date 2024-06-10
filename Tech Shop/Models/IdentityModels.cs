@@ -52,6 +52,9 @@ namespace Tech_Shop.Models
             // Disable pluralizing table names if necessary
         }
 
+        public System.Data.Entity.DbSet<Tech_Shop.Models.Device> Devices { get; set; }
+
+        public System.Data.Entity.DbSet<Tech_Shop.Models.DeviceCategory> DeviceCategories { get; set; }
     }
 
 }

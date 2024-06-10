@@ -4,43 +4,54 @@
 {
     using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
     {
-    @Html.AntiForgeryToken()
+        @Html.AntiForgeryToken()
 
-<ul class="navbar-nav navbar-right">
-    @if (RoleManager.CheckForRoles(User, "Admin"))
-    {
-        <li>
-            @Html.ActionLink("Control Panel", "Index", "Admin", routeValues: null, htmlAttributes: new { title = "Manage", @class = "nav-link" })
-        </li>
-    }
-    <li>
-        @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage", @class = "nav-link" })
-    </li>
-    <li>
-        <a href="@Url.Action("Index", "Wishlist")" class="nav-link">
-            <i class="fa-solid fa-heart"></i>
-        </a>
-    </li>
-    <li>
-        <a href="@Url.Action("Index", "Cart")" class="btn btn-light">
-            <i class="fa-solid fa-cart-shopping"></i> Cart
-        </a>
-    </li>
-    <li><a class="nav-link" href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
-</ul>
+        <ul class="navbar-nav navbar-right">
+            @if (RoleManager.CheckForRoles(User, "Admin"))
+            {
+                <li class="nav-item">
+                    @Html.ActionLink("Admin Panel", "Index", "Admin", routeValues: null, htmlAttributes: new { title = "Manage", @class = "nav-link" })
+                </li>
+            }
+            <li class="nav-item">
+                @Html.ActionLink("My Account", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage", @class = "nav-link" })
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("Index", "Wishlist")" class="btn nav-item text-light">
+                    <i class="fa-solid fa-heart"></i>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("Index", "Cart")" class="btn btn-light">
+                    <i class="fa-solid fa-cart-shopping"></i> Cart
+                </a>
+            </li>
+            <li class="nav-item"><a class="nav-link" href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
+        </ul>
+
     }
 }
 else
 {
-<ul class="navbar-nav navbar-right">
-        <a href="@Url.Action("Index", "Wishlist")" class="nav-link">
+    <ul class="navbar-nav navbar-right">
+        <a href="@Url.Action("Index", "Wishlist")" class="btn nav-item text-light">
             <i class="fa-solid fa-heart"></i>
         </a>
-    <a href="@Url.Action("Index", "Cart")" class="btn btn-light">
-        <i class="fa-solid fa-cart-shopping"></i> Cart
-    </a>
-    <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink", @class = "nav-link" })</li>
-    <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink", @class = "nav-link" })</li>
-</ul>
+        <a href="@Url.Action("Index", "Cart")" class="btn btn-light nav-item">
+            <i class="fa-solid fa-cart-shopping"></i> Cart
+        </a>
+        <li class="nav-item">@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink", @class = "nav-link" })</li>
+        <li class="nav-item">@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink", @class = "nav-link" })</li>
+    </ul>
 }
 
+<style>
+    .nav-item {
+        margin-right: 5px; /* Adjust the margin value to set the desired gap */
+    }
+
+        /* Remove margin-right for the last child */
+        .nav-item:last-child {
+            margin-right: 0;
+        }
+</style>

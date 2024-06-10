@@ -17,6 +17,7 @@ namespace Tech_Shop.ViewModels
             public decimal Price { get; set; }
             public int CategoryId { get; set; }
             public string CategoryName { get; set; }
+            public string DeviceImage { get; set; }
             public SelectList selectListItem { get; set; }
             public List<AttributeViewModel> Attributes { get; set; }
     }

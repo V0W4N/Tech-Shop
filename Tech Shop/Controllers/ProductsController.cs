@@ -52,40 +52,49 @@ namespace Tech_Shop.Controllers
 
             return View(list);
         }
-
+        [HttpGet]
         public ActionResult Create()
         {
             ViewBag.CategoryId = new SelectList(db.DeviceCategories, "CategoryId", "CategoryName");
-            var attr = db.DeviceCategoryAttributes.Select(a => new AttributeViewModel
-            {
-                AttributeId = a.AttributeId,
-                AttributeName = a.AttributeName
-            }).ToList();
-            /*
-             * var devices = db.Devices.Include(d => d.Category)
-                           .Include(d => d.AttributeValues.Select(av => av.Attribute))
-                            .ToList();*/
 
-            DeviceCreateViewModel dcvm = new DeviceCreateViewModel { Attributes = attr };
-            return View(dcvm);
+            DeviceCategoryView dcv = new DeviceCategoryView { };
+            return View(dcv);
         }
+
+        [HttpPost]
+        public ActionResult Create(DeviceCategoryView model)
+        {
+            
+            return RedirectToAction("CreateWithCategory", model.CategoryId);
+        }
+
+        [HttpPost]
+        public ActionResult CreateWithCategory(int id)
+        {
+
+            return View("Index");
+        }
+
+
 
         // POST: Device/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(DeviceCreateViewModel deviceViewModel)
+        public ActionResult CreateWithCategory(DeviceCreateViewModel deviceViewModel)
         {
+
             if (ModelState.IsValid)
             {
                 List<DeviceCategoryAttributeValue> attributeValues = new List<DeviceCategoryAttributeValue>();
-                foreach(var item in deviceViewModel.Attributes)
+                foreach(var item in db.DeviceCategoryAttributes
+                                    .Where(a => a.CategoryId == deviceViewModel.CategoryId)
+                                        .ToList())
                 {
 
                     attributeValues.Add(new DeviceCategoryAttributeValue
                     {
                         AttributeId = item.AttributeId,
                         Value = item.AttributeValue.Value
-
                     });
                 }
                 Device device = new Device
@@ -95,6 +104,7 @@ namespace Tech_Shop.Controllers
                     Description = deviceViewModel.Description,
                     Price = deviceViewModel.Price,
                     CategoryId = deviceViewModel.CategoryId,
+                    DeviceImage = deviceViewModel.DeviceImage,
                     AttributeValues = attributeValues
                 };
 
@@ -145,6 +155,7 @@ namespace Tech_Shop.Controllers
                 Device = device,
                 CategoryId = device.CategoryId,
                 CategoryName = device.Category.CategoryName,
+                DeviceImage = device.DeviceImage,
                 Attributes = attributesModel,
             };
             ViewBag.Categories = new SelectList(db.DeviceCategories, "CategoryId", "CategoryName", model.CategoryId);
@@ -163,6 +174,7 @@ namespace Tech_Shop.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(DeviceEditViewModel model)
         {
+            
                 var device = db.Devices.Find(model.DeviceId);
                 if (device == null) return HttpNotFound();
                 device.DeviceName = model.DeviceName;
@@ -170,7 +182,11 @@ namespace Tech_Shop.Controllers
                 device.Description = model.Description;
                 device.Price = model.Price;
                 device.CategoryId = model.CategoryId;
-                device.AttributeValues = model.Attributes.Select(attr =>  attr.AttributeValue).ToList();
+                device.DeviceImage = model.DeviceImage;
+            if (model.Attributes != null)
+            {
+                device.AttributeValues = model.Attributes.Select(attr => attr.AttributeValue).ToList();
+            }
                 db.SaveChanges();
                 return RedirectToAction("Index");
         }
@@ -258,6 +274,8 @@ namespace Tech_Shop.Controllers
         // GET: Products/Details/5
         public ActionResult Details(int? id)
         {
+            var cartItems = _cartService.GetCartItems();
+            var wlItems = _wishlistService.GetWishlistItems();
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -267,7 +285,8 @@ namespace Tech_Shop.Controllers
             {
                 return HttpNotFound();
             }
-            return View(device);
+            
+            return View(new DetailsView { CartItems = cartItems, WishItems = wlItems, Device = device});
         }
 
         [Authorize]

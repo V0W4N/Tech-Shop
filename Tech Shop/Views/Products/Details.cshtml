@@ -1,50 +1,94 @@
-﻿@model Tech_Shop.Models.Device
+﻿@model Tech_Shop.ViewModels.DetailsView
 
 @{
     ViewBag.Title = "Details";
+    var cartItem = Model.CartItems.SingleOrDefault(ci => ci.DeviceId == Model.Device.DeviceId);
+    var wishlistItem = Model.WishItems.SingleOrDefault(ci => ci.DeviceId == Model.Device.DeviceId);
 }
 
 <h2>Details</h2>
 
-<div>
-    <h4>Product</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.DeviceName)
-        </dt>
+<div class="container">
+    <div class="row">
+        <div class="col-xl d-none d-xl-block">
+            <div class="colors-wrapper mb-8">
+                <span class="d-block mb-8">Culoare</span>
+                <div class="color d-flex flex-wrap">
+                    <a href="#" title="Black">
+                        <div data-color="#000000" class="circle color_d" style="background: Black; background: #000000; border: solid 2px #fff; box-shadow: 0 0 0 2px #000000"></div>
+                    </a>
+                </div>
+            </div>
+            <div class="main-description">
+                <ul class="features">
+                    <li class="char_all">
+                        DeviceName :
+                        @Html.DisplayFor(model => model.Device.DeviceName)
+                    </li>
 
-        <dd>
-            @Html.DisplayFor(model => model.DeviceName)
-        </dd>
+                    <li class="char_all">
+                        Description :
+                        @Html.DisplayFor(model => model.Device.Description)
+                    </li>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
+                    <li class="char_all">
+                        Category :
+                        @Html.DisplayFor(model => model.Device.Category)
+                    </li>
 
-        <dd>
-            @Html.DisplayFor(model => model.Description)
-        </dd>
+                    <li class="char_all">
+                        DeviceId :
+                        @Html.DisplayFor(model => model.Device.DeviceId)
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-xl-4 col-xxl-3 d-md-flex flex-md-column">
+            <div class="bottom-wrap">
+                <div class="price-wrap h5 d-flex flex-column m-0">
+                    <span class="price-new"><b>@Model.Device.Price</b> lei</span>
+                </div>
+                <div class="icons-wrapper row">
+                    <div class="col">
+                        <a class="add_to_compare" data-id="@Model.Device.DeviceId" title="Comparație"><span class="icon-scale mr-3"></span></a>
+                    </div>
+                    <div class="col">
+                            @using (Html.BeginForm("AddToCart", "Products", FormMethod.Post, new { @class = "share-button" }))
+                            {
+                                @Html.Hidden("id", Model.Device.DeviceId)
+                                <button type="submit" class="btn btn-secondary">Add to cart</button>
+                            }
+                    </div>
+                    <div class="col">
+                        @if (wishlistItem != null)
+                        {
+                            using (Html.BeginForm("RemoveFromWishlist", "Products", FormMethod.Post, new { @class = "share-button" }))
+                            {
+                                @Html.Hidden("id", Model.Device.DeviceId)
+                                <button type="submit" class="btn btn-action">
+                                    <i class="fas fa-heart"></i> Remove
+                                </button>
+                            }
+                        }
+                        else
+                        {
+                            using (Html.BeginForm("AddToWishlist", "Products", FormMethod.Post, new { @class = "share-button" }))
+                            {
+                                @Html.Hidden("id", Model.Device.DeviceId)
+                                <button type="submit" class="btn btn-action">
+                                    <i class="far fa-heart"></i> I want this
+                                </button>
+                            }
+                        }
+                    </div>
+                </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Category)
-        </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Category)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.DeviceId)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.DeviceId)
-        </dd>
-
-    </dl>
+            </div>
+            <p>
+                @Html.ActionLink("Edit", "Edit", new { id = Model.Device.DeviceId }) |
+                @Html.ActionLink("Back to List", "Index")
+            </p>
+        </div>
+    </div>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.DeviceId }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>

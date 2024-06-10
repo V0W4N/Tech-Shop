@@ -11,5 +11,6 @@ namespace Tech_Shop.ViewModels
     {
         public List<DeviceCategory> DeviceCategories { get; set; }
         public string NewCategoryName { get; set; }
+        public int CategoryId { get; set; }
     }
 }

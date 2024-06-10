@@ -1,6 +1,6 @@
 ﻿@model Tech_Shop.Models.ProductListWithQ
 
-<h1>Список товаров</h1>
+<h1 style="margin-top:4%">Список товаров</h1>
 <p>
     @if (Model.IsAdmin)
     {
@@ -10,114 +10,103 @@
     }
 </p>
 
-@using (Html.BeginForm("Index", "Products", FormMethod.Post))
-{
-    <div style="margin: 2% auto 1% 5% ">
-        <h5>Поиск</h5>
-        <div class="col">
-            <div class="input-group">
-                @Html.TextBox("searchInput", null, new { id = "searchInput", placeholder = "Enter your search query", @class = "form-control" })
-                <div class="input-group-append">
-                    <button type="submit" class="btn btn-primary" style="margin-left: 10px">Search</button>
-                </div>
-            </div>
-        </div>
-    </div>
-}
-<table class="table">
-    <tr>
-        <th style="text-align: center;">
-            Название
-        </th>
-        <th style="text-align: center;">
-            Описание
-        </th>
-        <th style="text-align: center;">
-            Категория
-        </th>
-        <th style="text-align: center;">
-            Цена
-        </th>
-        <th style="width: 200px;"></th>
-        <th></th>
-    </tr>
 
+<section class="products row">
     @foreach (var item in Model.Devices)
     {
         var cartItem = Model.CartItems.SingleOrDefault(ci => ci.DeviceId == item.DeviceId);
         var wishlistItem = Model.WishItems.SingleOrDefault(ci => ci.DeviceId == item.DeviceId);
-        <tr>
-            <td class="centered-cell">
-                @Html.DisplayFor(model => item.DeviceName)
-            </td>
-            <td class="centered-cell">
-                @Html.DisplayFor(model => item.Description)
-            </td>
-            <td class="centered-cell">
-                @Html.DisplayFor(model => item.Category.CategoryName)
-            </td>
-            <td class="centered-cell">
-                @Html.DisplayFor(model => item.Price)
-            </td>
-            <td>
-                @if (cartItem != null)
-                {
-                    using (Html.BeginForm("RemoveFromCart", "Products", FormMethod.Post, new { @class = "share-button" }))
-                    {
-                        @Html.Hidden("id", item.DeviceId)
-                        <button type="submit" class="btn btn-outline-danger">-</button>
-                    }
-                    <h5 class="share-button">@cartItem.Quantity</h5>
-                    using (Html.BeginForm("AddToCart", "Products", FormMethod.Post, new { @class = "share-button" }))
-                    {
-                        @Html.Hidden("id", item.DeviceId)
-                        <button type="submit" class="btn btn-outline-success">+</button>
-                    }
-                }
-                else
-                {
-                    using (Html.BeginForm("AddToCart", "Products", FormMethod.Post, new { @class = "form-inline" }))
-                    {
-                        @Html.Hidden("id", item.DeviceId)
-                        <button type="submit" class="btn btn-secondary">Add to cart</button>
-                    }
-                }
 
-                @if (wishlistItem != null)
-                {
-                    using (Html.BeginForm("RemoveFromWishlist", "Products", FormMethod.Post, new { @class = "form-inline" }))
+        <div class="col-6 col-md-5 col-lg-3 night-mode" style="margin: 4% auto auto auto ">
+            <figure class="card card-product border-0">
+                <div class="labels-wrapper">
+                </div>
+                <div class="grid-item" data-list-index="0" data-product-index="0">
+                    <div class="img-wrap w-100">
+                        @if (!string.IsNullOrEmpty(item.DeviceImage))
+                        {
+                            <a href="@Url.Action("Details", "Products", new { id = item.DeviceId })" title="@item.DeviceName" class="ga-item">
+                                <img class="card-image" src="@item.DeviceImage" alt="@item.DeviceName photo" title="@item.DeviceName">
+                            </a>
+                        }
+                        else
+                        {
+                            <div class="no-image-placeholder ga-item">
+                                No Image Available
+                            </div>
+                        }
+                    </div>
+                    <figcaption class="info-wrap" data-brand="@item.Category.CategoryName" data-categ="@item.Category.CategoryName" data-prods="@item.DeviceName">
+                        <div class="title">
+                            <a class="d-block mb-2 nav-link" style="font-size: 19px; color: black" href="@Url.Action("Details", "Products", new { id = item.DeviceId })" title="@item.DeviceName">
+                                @item.DeviceName
+                            </a>
+                        </div>
+                        <p>@item.Description</p>
+                    </figcaption>
+                </div>
+                <div class="bottom-wrap">
+                    <div class="price-wrap h5 d-flex flex-column m-0" >
+                        <span class="price-new" style="margin-bottom: 3%"><b>@item.Price</b> lei</span>
+                    </div>
+                    <div class="icons-wrapper">
+                        <a class="add_to_compare" data-id="@item.DeviceId" title="Comparație"><span class="icon-scale mr-3"></span></a>
+                        @if (cartItem != null)
+                        {
+                            using (Html.BeginForm("RemoveFromCart", "Products", FormMethod.Post, new { @class = "share-button" }))
+                            {
+                                @Html.Hidden("id", item.DeviceId)
+                                <button type="submit" class="btn btn-outline-danger">-</button>
+                            }
+                            <h5 class="share-button">@cartItem.Quantity</h5>
+                            using (Html.BeginForm("AddToCart", "Products", FormMethod.Post, new { @class = "share-button" }))
+                            {
+                                @Html.Hidden("id", item.DeviceId)
+                                <button type="submit" class="btn btn-outline-success">+</button>
+                            }
+                        }
+                        else
+                        {
+                            using (Html.BeginForm("AddToCart", "Products", FormMethod.Post, new { @class = "share-button" }))
+                            {
+                                @Html.Hidden("id", item.DeviceId)
+                                <button type="submit" class="btn btn-secondary">Add to cart</button>
+                            }
+                        }
+                        @if (wishlistItem != null)
+                        {
+                            using (Html.BeginForm("RemoveFromWishlist", "Products", FormMethod.Post, new { @class = "share-button" }))
+                            {
+                                @Html.Hidden("id", item.DeviceId)
+                                <button type="submit" class="btn btn-action">
+                                    <i class="fas fa-heart"></i> Remove
+                                </button>
+                            }
+                        }
+                        else
+                        {
+                            using (Html.BeginForm("AddToWishlist", "Products", FormMethod.Post, new { @class = "share-button" }))
+                            {
+                                @Html.Hidden("id", item.DeviceId)
+                                <button type="submit" class="btn btn-action">
+                                    <i class="far fa-heart"></i> I want this
+                                </button>
+                            }
+                        }
+                    </div>
+                </div>
+                <div>
+                    @if (Model.IsAdmin)
                     {
-                        @Html.Hidden("id", item.DeviceId)
-                        <button type="submit" class="nav-link">
-                            <i class="fas fa-heart"></i> Remove
-                        </button>
+                        @Html.ActionLink("Edit", "Edit", new { id = item.DeviceId }, new { @class = "form-inline" })
+                        @Html.ActionLink("Details", "Details", new { id = item.DeviceId }, new { @class = "form-inline" })
+                        @Html.ActionLink("Delete", "Delete", new { id = item.DeviceId }, new { @class = "form-inline" })
                     }
-                }
-                else
-                {
-                    using (Html.BeginForm("AddToWishlist", "Products", FormMethod.Post, new { @class = "form-inline" }))
-                    {
-                        @Html.Hidden("id", item.DeviceId)
-                        <button type="submit" class="nav-link">
-                            <i class="far fa-heart"></i> I want this
-                        </button>
-                    }
-                }
-            </td>
-            <td>
-
-                @if (Model.IsAdmin)
-                {
-                    @Html.ActionLink("Edit", "Edit", new { id = item.DeviceId }, new { @class = "form-inline" })
-                    <span>|</span>
-                    @Html.ActionLink("Details", "Details", new { id = item.DeviceId }, new { @class = "form-inline" })
-                    <span>|</span>
-                    @Html.ActionLink("Delete", "Delete", new { id = item.DeviceId }, new { @class = "form-inline" })
-                }
-            </td>
-        </tr>
+                </div>
+            </figure>
+        </div>
     }
-</table>
+</section>
 
 <style>
     .centered-cell {
@@ -132,5 +121,29 @@
 
     .share-button {
         display: inline-block;
+    }
+    .img-wrap {
+        width: 400px;
+        height: 345px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden; /* Ensures images don't overflow */
+        border: 1px solid #e0e0e0; /* Optional: Add border for clarity */
+    }
+
+    .card-image {
+        width: 100%; /* Make the image fill its container */
+        height: auto; /* Maintain aspect ratio */
+    }
+
+    .no-image-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f8f9fa;
+        color: #6c757d; /* Optional: Add text color */
     }
 </style>

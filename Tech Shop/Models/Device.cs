@@ -23,6 +23,7 @@ namespace Tech_Shop.Models
         [StringLength(100)] 
         public string Manufacturer { get; set; }
         [Required] public string Description { get; set; }
+        public string DeviceImage { get; set; }
 
         [ForeignKey("Category")]
         public int CategoryId { get; set; }
